@@ -3,6 +3,7 @@ import {
   FolderKanban,
   LayoutDashboard,
   Lightbulb,
+  Mail,
   Shapes,
   ShoppingBag,
   Users,
@@ -27,6 +28,7 @@ export const adminDashboardLinks = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/dashboard/admin/ideas", label: "Idea Review", icon: ClipboardList },
   { href: "/dashboard/admin/categories", label: "Categories", icon: Shapes },
+  { href: "/dashboard/admin/newsletters", label: "Newsletters", icon: Mail },
   { href: "/dashboard/admin/users", label: "Users", icon: Users },
   { href: "/ideas", label: "Public Ideas", icon: Lightbulb },
 ];

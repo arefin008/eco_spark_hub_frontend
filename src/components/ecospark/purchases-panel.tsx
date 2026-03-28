@@ -31,9 +31,17 @@ export function PurchasesPanel() {
                 {formatDate(purchase.createdAt)}
               </p>
             </div>
-            <Link href={`/ideas/${purchase.idea.id}`} className="text-sm font-semibold text-primary">
-              Open idea
-            </Link>
+            <div className="flex flex-col gap-2 sm:items-end">
+              <Link href={`/ideas/${purchase.idea.id}`} className="text-sm font-semibold text-primary">
+                Open idea
+              </Link>
+              <Link
+                href={`/dashboard/member/purchases/${purchase.id}`}
+                className="text-sm font-semibold text-primary"
+              >
+                View payment status
+              </Link>
+            </div>
           </div>
         </article>
       ))}

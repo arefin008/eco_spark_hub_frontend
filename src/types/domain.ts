@@ -109,6 +109,13 @@ export interface Purchase {
   };
 }
 
+export interface NewsletterSubscription {
+  id: string;
+  email: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
 export interface AuthPayload {
   accessToken: string;
   refreshToken: string;
