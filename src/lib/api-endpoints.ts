@@ -35,10 +35,10 @@ export const apiEndpoints = {
     upsert: "/votes",
     remove: "/votes",
   },
-  newsletter: {
-    subscribe: "/newsletter/subscribe",
-    unsubscribe: (email: string) => `/newsletter/unsubscribe/${email}`,
-    list: "/newsletter",
+  newsletters: {
+    subscribe: "/newsletters/subscribe",
+    unsubscribe: (email: string) => `/newsletters/unsubscribe/${email}`,
+    list: "/newsletters",
   },
   payments: {
     confirm: "/payments/confirm",
@@ -57,8 +57,8 @@ export const apiEndpoints = {
     byId: (id: string) => `/users/${id}`,
     update: (id: string) => `/users/${id}`,
   },
-  admin: {
-    stats: "/admin/stats",
-    updateUserStatus: (id: string) => `/admin/users/${id}/status`,
+  admins: {
+    stats: "/admins/stats",
+    updateUserStatus: (id: string) => `/admins/users/${id}/status`,
   },
 } as const;
