@@ -1,18 +1,34 @@
 "use client";
 
-import { Menu, UserCircle2 } from "lucide-react";
+import { LogOut, Menu, UserCircle2 } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { ThemeToggle } from "@/components/ecospark/theme-toggle";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { publicNavLinks } from "@/lib/routes";
+import { authService } from "@/services/auth.service";
 import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: currentUser } = useCurrentUser();
   const [open, setOpen] = useState(false);
+  const logoutMutation = useMutation({
+    mutationFn: authService.logout,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      toast.success("Logged out.");
+      setOpen(false);
+      router.push("/");
+    },
+    onError: (error) => toast.error(error.message),
+  });
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-xl">
@@ -48,6 +64,14 @@ export function SiteHeader() {
               <Link href="/dashboard" className={cn(buttonVariants({ variant: "default" }))}>
                 Dashboard
               </Link>
+              <Button
+                variant="ghost"
+                onClick={() => logoutMutation.mutate()}
+                disabled={logoutMutation.isPending}
+              >
+                <LogOut className="size-4" />
+                {logoutMutation.isPending ? "Logging out..." : "Logout"}
+              </Button>
             </>
           ) : (
             <>
@@ -80,6 +104,16 @@ export function SiteHeader() {
             <Link href={currentUser ? "/dashboard" : "/login"} onClick={() => setOpen(false)}>
               {currentUser ? "Dashboard" : "Login"}
             </Link>
+            {currentUser ? (
+              <button
+                type="button"
+                className="text-left"
+                onClick={() => logoutMutation.mutate()}
+                disabled={logoutMutation.isPending}
+              >
+                {logoutMutation.isPending ? "Logging out..." : "Logout"}
+              </button>
+            ) : null}
           </nav>
         </div>
       ) : null}
