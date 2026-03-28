@@ -86,6 +86,10 @@ export interface Comment {
   user: IdeaAuthor;
 }
 
+export interface ThreadComment extends Comment {
+  replies?: ThreadComment[];
+}
+
 export interface Purchase {
   id: string;
   ideaId: string;

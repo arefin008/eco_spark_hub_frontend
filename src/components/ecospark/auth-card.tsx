@@ -2,7 +2,7 @@
 
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Globe, LoaderCircle } from "lucide-react";
+import { Eye, EyeOff, Globe, LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -45,6 +45,51 @@ function FieldError({ message }: { message?: string }) {
   return <p className="text-sm text-destructive">{message}</p>;
 }
 
+function PasswordField({
+  label,
+  value,
+  onBlur,
+  onChange,
+  placeholder,
+  error,
+  visible,
+  onToggleVisibility,
+}: {
+  label: string;
+  value: string;
+  onBlur: () => void;
+  onChange: (value: string) => void;
+  placeholder: string;
+  error?: string;
+  visible: boolean;
+  onToggleVisibility: () => void;
+}) {
+  return (
+    <label className="block space-y-2">
+      <span className="text-sm font-medium">{label}</span>
+      <div className="relative">
+        <Input
+          type={visible ? "text" : "password"}
+          value={value}
+          onBlur={onBlur}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder={placeholder}
+          className="pr-11"
+        />
+        <button
+          type="button"
+          onClick={onToggleVisibility}
+          className="absolute inset-y-0 right-0 inline-flex w-11 items-center justify-center text-muted-foreground transition hover:text-foreground"
+          aria-label={visible ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
+        >
+          {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+        </button>
+      </div>
+      <FieldError message={error} />
+    </label>
+  );
+}
+
 export function AuthCard({ mode }: { mode: "login" | "register" }) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -60,6 +105,9 @@ export function AuthCard({ mode }: { mode: "login" | "register" }) {
     Partial<Record<keyof RegisterValues, string>>
   >({});
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const mutation = useMutation({
     mutationFn: (payload: RegisterInput | LoginInput) =>
@@ -226,33 +274,31 @@ export function AuthCard({ mode }: { mode: "login" | "register" }) {
 
             <registerForm.Field name="password">
               {(field) => (
-                <label className="block space-y-2">
-                  <span className="text-sm font-medium">Password</span>
-                  <Input
-                    type="password"
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    placeholder="At least 6 characters"
-                  />
-                  <FieldError message={registerErrors.password} />
-                </label>
+                <PasswordField
+                  label="Password"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={field.handleChange}
+                  placeholder="At least 6 characters"
+                  error={registerErrors.password}
+                  visible={showRegisterPassword}
+                  onToggleVisibility={() => setShowRegisterPassword((value) => !value)}
+                />
               )}
             </registerForm.Field>
 
             <registerForm.Field name="confirmPassword">
               {(field) => (
-                <label className="block space-y-2">
-                  <span className="text-sm font-medium">Confirm password</span>
-                  <Input
-                    type="password"
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    placeholder="Repeat your password"
-                  />
-                  <FieldError message={registerErrors.confirmPassword} />
-                </label>
+                <PasswordField
+                  label="Confirm password"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={field.handleChange}
+                  placeholder="Repeat your password"
+                  error={registerErrors.confirmPassword}
+                  visible={showConfirmPassword}
+                  onToggleVisibility={() => setShowConfirmPassword((value) => !value)}
+                />
               )}
             </registerForm.Field>
 
@@ -288,17 +334,16 @@ export function AuthCard({ mode }: { mode: "login" | "register" }) {
 
             <loginForm.Field name="password">
               {(field) => (
-                <label className="block space-y-2">
-                  <span className="text-sm font-medium">Password</span>
-                  <Input
-                    type="password"
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    placeholder="Your password"
-                  />
-                  <FieldError message={loginErrors.password} />
-                </label>
+                <PasswordField
+                  label="Password"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={field.handleChange}
+                  placeholder="Your password"
+                  error={loginErrors.password}
+                  visible={showLoginPassword}
+                  onToggleVisibility={() => setShowLoginPassword((value) => !value)}
+                />
               )}
             </loginForm.Field>
 

@@ -6,7 +6,9 @@ import { IdeaCard } from "@/components/ecospark/idea-card";
 import { NewsletterForm } from "@/components/ecospark/newsletter-form";
 import { PageShell } from "@/components/ecospark/page-shell";
 import { SectionHeading } from "@/components/ecospark/section-heading";
+import { buttonVariants } from "@/components/ui/button-styles";
 import { getFeaturedIdeas } from "@/lib/server/public-ideas";
+import { cn } from "@/lib/utils";
 
 const featureHighlights = [
   {
@@ -74,13 +76,19 @@ export default async function HomePage() {
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link
                   href="/ideas"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-[0_18px_36px_-24px_color-mix(in_oklab,var(--primary)_90%,black)] transition hover:-translate-y-0.5"
+                  className={cn(
+                    buttonVariants({ variant: "default", size: "lg" }),
+                    "rounded-full px-5",
+                  )}
                 >
                   Explore Ideas
                 </Link>
                 <Link
                   href="/register"
-                  className="rounded-full border border-border bg-background px-5 py-3 text-center text-sm font-semibold transition hover:bg-muted/60"
+                  className={cn(
+                    buttonVariants({ variant: "outline", size: "lg" }),
+                    "rounded-full px-5",
+                  )}
                 >
                   Become a Member
                 </Link>

@@ -1,12 +1,13 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, Leaf, LogOut, Menu, UserCircle2, X } from "lucide-react";
+import { ArrowRight, LogOut, Menu, UserCircle2, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { BrandMark } from "@/components/shared/brand-mark";
 import { ThemeToggle } from "@/components/ecospark/theme-toggle";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useCurrentUser } from "@/hooks/use-current-user";
@@ -66,9 +67,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/88 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:px-5 md:px-8 lg:px-10">
         <Link href="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,var(--primary),var(--secondary))] text-sm font-semibold text-white shadow-sm sm:size-11">
-            <Leaf className="size-5" />
-          </span>
+          <BrandMark className="size-10 sm:size-11" glyphClassName="size-5 sm:size-[1.35rem]" />
           <div className="min-w-0">
             <p className="truncate text-[15px] font-semibold tracking-tight sm:text-base">
               EcoSpark Hub

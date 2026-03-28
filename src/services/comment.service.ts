@@ -1,6 +1,6 @@
 import { apiEndpoints } from "@/lib/api-endpoints";
 import type { ApiResponse } from "@/types/api";
-import type { Comment } from "@/types/domain";
+import type { Comment, ThreadComment } from "@/types/domain";
 
 import { httpClient } from "./http-client";
 
@@ -12,7 +12,7 @@ export interface CommentInput {
 
 export const commentService = {
   async listByIdea(ideaId: string) {
-    const { data } = await httpClient.get<ApiResponse<Comment[]>>(
+    const { data } = await httpClient.get<ApiResponse<ThreadComment[]>>(
       apiEndpoints.comments.listByIdea(ideaId),
     );
     return data.data;
