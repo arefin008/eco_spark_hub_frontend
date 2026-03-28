@@ -49,9 +49,9 @@ export function SiteFooter() {
           <div>
             <p className="font-semibold text-foreground">Contact</p>
             <p className="mt-4 leading-7 text-muted-foreground">
-              hello@ecosparkhub.dev
+              arefinrounok@gmail.com
               <br />
-              +880 1000-000000
+              +880 1712394302
               <br />
               Dhaka, Bangladesh
             </p>

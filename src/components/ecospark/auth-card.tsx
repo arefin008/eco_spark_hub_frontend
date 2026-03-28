@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { appConfig } from "@/lib/app-config";
 import {
   authService,
   type LoginInput,
@@ -48,12 +49,17 @@ export function AuthCard({ mode }: { mode: "login" | "register" }) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
-  const nextPath = searchParams.get("next") || "/dashboard";
-  const googleAuthUrl = authService.getGoogleAuthUrl();
+  const requestedNextPath = searchParams.get("next");
+  const nextPath =
+    requestedNextPath && requestedNextPath.startsWith("/") && !requestedNextPath.startsWith("//")
+      ? requestedNextPath
+      : "/dashboard";
+  const googleCallbackUrl = new URL(nextPath, appConfig.appUrl).toString();
   const [loginErrors, setLoginErrors] = useState<Partial<Record<keyof LoginValues, string>>>({});
   const [registerErrors, setRegisterErrors] = useState<
     Partial<Record<keyof RegisterValues, string>>
   >({});
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const mutation = useMutation({
     mutationFn: (payload: RegisterInput | LoginInput) =>
@@ -128,6 +134,19 @@ export function AuthCard({ mode }: { mode: "login" | "register" }) {
 
   const submitLabel = mode === "register" ? "Create account" : "Sign in";
 
+  async function handleGoogleSignIn() {
+    try {
+      setIsGoogleLoading(true);
+      const result = await authService.signInWithGoogle(googleCallbackUrl);
+      window.location.assign(result.url);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Google sign-in could not be started.";
+      toast.error(message);
+      setIsGoogleLoading(false);
+    }
+  }
+
   return (
     <Card className="w-full max-w-md border-border/70 bg-card/95 shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
       <CardHeader className="space-y-3 p-8">
@@ -145,13 +164,16 @@ export function AuthCard({ mode }: { mode: "login" | "register" }) {
       </CardHeader>
 
       <CardContent className="space-y-6 px-8 pb-8 pt-0">
-        <a
-          href={googleAuthUrl}
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => void handleGoogleSignIn()}
+          disabled={isGoogleLoading}
           className="inline-flex h-12 w-full items-center justify-center gap-3 rounded-2xl border border-border bg-background text-sm font-medium transition hover:bg-muted"
         >
-          <Globe className="size-4" />
-          Continue with Google
-        </a>
+          {isGoogleLoading ? <LoaderCircle className="size-4 animate-spin" /> : <Globe className="size-4" />}
+          {isGoogleLoading ? "Redirecting to Google..." : "Continue with Google"}
+        </Button>
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">

@@ -32,9 +32,29 @@ export interface ResetPasswordInput {
   newPassword: string;
 }
 
+interface SocialSignInResponse {
+  url: string;
+  redirect: boolean;
+}
+
 export const authService = {
-  getGoogleAuthUrl() {
-    return appConfig.googleAuthUrl;
+  async signInWithGoogle(callbackUrl?: string) {
+    const response = await fetch(appConfig.googleAuthUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        provider: "google",
+        callbackURL: callbackUrl,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Google sign-in could not be started.");
+    }
+
+    return (await response.json()) as SocialSignInResponse;
   },
   async register(payload: RegisterInput) {
     const { data } = await httpClient.post<ApiResponse<AuthPayload>>(
