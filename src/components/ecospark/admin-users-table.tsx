@@ -7,6 +7,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -88,6 +89,11 @@ export function AdminUsersTable() {
               </p>
             </div>
             <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+              <Link href={`/dashboard/admin/users/${user.id}`}>
+                <Button variant="outline" size="sm">
+                  Details
+                </Button>
+              </Link>
               <Button
                 variant="outline"
                 size="sm"
@@ -136,6 +142,11 @@ export function AdminUsersTable() {
                 ))}
                 <td className="px-4 py-4">
                   <div className="flex flex-wrap gap-2">
+                    <Link href={`/dashboard/admin/users/${row.original.id}`}>
+                      <Button variant="outline" size="sm">
+                        Details
+                      </Button>
+                    </Link>
                     <Button
                       variant="outline"
                       size="sm"

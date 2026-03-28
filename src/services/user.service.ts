@@ -9,4 +9,11 @@ export const userService = {
     const { data } = await httpClient.get<ApiResponse<User>>(apiEndpoints.users.byId(id));
     return data.data;
   },
+  async update(id: string, payload: Partial<Pick<User, "name" | "email" | "role" | "status">>) {
+    const { data } = await httpClient.patch<ApiResponse<User>>(
+      apiEndpoints.users.byId(id),
+      payload,
+    );
+    return data.data;
+  },
 };

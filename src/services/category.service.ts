@@ -21,4 +21,21 @@ export const categoryService = {
       meta: data.meta as ApiMeta | undefined,
     };
   },
+  async create(payload: { name: string; description?: string }) {
+    const { data } = await httpClient.post<ApiResponse<Category>>(
+      apiEndpoints.categories.create,
+      payload,
+    );
+    return data.data;
+  },
+  async update(id: string, payload: { name: string; description?: string }) {
+    const { data } = await httpClient.patch<ApiResponse<Category>>(
+      apiEndpoints.categories.update(id),
+      payload,
+    );
+    return data.data;
+  },
+  async remove(id: string) {
+    await httpClient.delete(apiEndpoints.categories.remove(id));
+  },
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, LogOut, Menu, UserCircle2, X } from "lucide-react";
+import { ArrowRight, LogOut, Menu, SquarePen, UserCircle2, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -98,6 +98,15 @@ export function SiteHeader() {
           <ThemeToggle />
           {currentUser ? (
             <>
+              {currentUser.role === "MEMBER" ? (
+                <Link
+                  href="/dashboard/member/ideas/new"
+                  className={cn(buttonVariants({ variant: "outline" }), "rounded-full px-4")}
+                >
+                  <SquarePen className="size-4" />
+                  Create Idea
+                </Link>
+              ) : null}
               <Link
                 href="/my-profile"
                 className={cn(buttonVariants({ variant: "outline" }), "rounded-full px-3.5")}
@@ -169,6 +178,19 @@ export function SiteHeader() {
             <div className="mt-3 border-t border-border/70 pt-3">
               {currentUser ? (
                 <div className="space-y-2">
+                  {currentUser.role === "MEMBER" ? (
+                    <Link
+                      href="/dashboard/member/ideas/new"
+                      onClick={() => setOpen(false)}
+                      className={cn(
+                        buttonVariants({ variant: "outline" }),
+                        "h-11 w-full justify-between rounded-2xl px-4",
+                      )}
+                    >
+                      Create Idea
+                      <SquarePen className="size-4" />
+                    </Link>
+                  ) : null}
                   <Link
                     href="/my-profile"
                     onClick={() => setOpen(false)}

@@ -1,7 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { BarChart3, FileText, Shield, ShoppingBag, Users } from "lucide-react";
+import { ArrowRight, BarChart3, FileText, Shield, ShoppingBag, SquarePen, Users } from "lucide-react";
+import Link from "next/link";
 import {
   Bar,
   BarChart,
@@ -13,6 +14,8 @@ import {
 } from "recharts";
 
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { adminService } from "@/services/admin.service";
 import { ideaService } from "@/services/idea.service";
 import { purchaseService } from "@/services/purchase.service";
@@ -136,6 +139,22 @@ export function DashboardOverview() {
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Track your ideas and premium access
         </h1>
+        <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap">
+          <Link
+            href="/dashboard/member/ideas/new"
+            className={cn(buttonVariants({ variant: "default", size: "lg" }), "rounded-2xl px-4")}
+          >
+            <SquarePen className="size-4" />
+            Create Idea
+          </Link>
+          <Link
+            href="/dashboard/member/ideas"
+            className={cn(buttonVariants({ variant: "outline", size: "lg" }), "rounded-2xl px-4")}
+          >
+            Manage Ideas
+            <ArrowRight className="size-4" />
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
