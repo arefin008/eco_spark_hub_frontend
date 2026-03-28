@@ -86,12 +86,18 @@ function FieldError({ message }: { message?: string }) {
   return <p className="text-sm text-destructive">{message}</p>;
 }
 
-export function AuthCard({ mode }: { mode: "login" | "register" }) {
+export function AuthCard({
+  mode,
+  initialView = "form",
+}: {
+  mode: "login" | "register";
+  initialView?: "form" | "recovery";
+}) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const nextPath = searchParams.get("next") || "/dashboard";
-  const [showRecovery, setShowRecovery] = useState(false);
+  const [showRecovery, setShowRecovery] = useState(initialView === "recovery");
   const [loginErrors, setLoginErrors] = useState<Partial<Record<keyof LoginValues, string>>>({});
   const [registerErrors, setRegisterErrors] = useState<
     Partial<Record<keyof RegisterValues, string>>
@@ -432,6 +438,13 @@ export function AuthCard({ mode }: { mode: "login" | "register" }) {
                 >
                   Back to sign in
                 </button>
+
+                <Link
+                  href="/login"
+                  className="block text-center text-sm text-muted-foreground transition hover:text-foreground"
+                >
+                  Open the full sign-in page
+                </Link>
               </form>
             ) : mode === "register" ? (
               <form
@@ -558,7 +571,12 @@ export function AuthCard({ mode }: { mode: "login" | "register" }) {
                   >
                     Forgot password?
                   </button>
-                  <p className="text-muted-foreground">Uses backend cookie-based session refresh.</p>
+                  <Link
+                    href="/forgot-password"
+                    className="text-muted-foreground transition hover:text-foreground"
+                  >
+                    Open recovery page
+                  </Link>
                 </div>
 
                 <Button className="w-full" size="lg" type="submit" disabled={mutation.isPending}>

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -257,6 +258,18 @@ export function ProfilePanel() {
                     </p>
                   </div>
                 </div>
+              </div>
+
+              <div className="grid gap-3 rounded-[28px] border border-border/70 bg-background/82 p-5">
+                <p className="text-sm font-semibold">Security routes</p>
+                <Link href="/change-password" className="text-sm text-primary transition hover:text-primary/80">
+                  Open dedicated change-password page
+                </Link>
+                {!currentUser.emailVerified ? (
+                  <Link href="/verify-email" className="text-sm text-primary transition hover:text-primary/80">
+                    Open dedicated verify-email page
+                  </Link>
+                ) : null}
               </div>
 
               <Button
