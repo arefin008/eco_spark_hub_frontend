@@ -63,9 +63,9 @@ export function AdminUsersTable() {
   });
 
   return (
-    <div className="space-y-6 px-6 py-10 lg:px-10">
-      <div className="rounded-[28px] border border-border/80 bg-card p-6">
-        <h1 className="text-3xl font-semibold tracking-tight">Member management</h1>
+    <div className="space-y-6 px-4 py-8 sm:px-6 lg:px-10">
+      <div className="rounded-[24px] border border-border/80 bg-card p-5 sm:rounded-[28px] sm:p-6">
+        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Member management</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Search users and activate or deactivate accounts.
         </p>
@@ -77,8 +77,41 @@ export function AdminUsersTable() {
         />
       </div>
 
-      <div className="overflow-hidden rounded-[28px] border border-border/80 bg-card">
-        <table className="w-full text-left text-sm">
+      <div className="grid gap-4 md:hidden">
+        {(usersQuery.data?.data ?? []).map((user) => (
+          <article key={user.id} className="rounded-[24px] border border-border/80 bg-card p-5">
+            <div className="space-y-2">
+              <p className="text-lg font-semibold">{user.name}</p>
+              <p className="break-all text-sm text-muted-foreground">{user.email}</p>
+              <p className="text-sm text-muted-foreground">
+                {user.role} • {user.status} • {formatDate(user.createdAt)}
+              </p>
+            </div>
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={user.status === "ACTIVE" || statusMutation.isPending}
+                onClick={() => statusMutation.mutate({ id: user.id, status: "ACTIVE" })}
+              >
+                Activate
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={user.status === "DEACTIVATED" || statusMutation.isPending}
+                onClick={() => statusMutation.mutate({ id: user.id, status: "DEACTIVATED" })}
+              >
+                Deactivate
+              </Button>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="hidden overflow-hidden rounded-[28px] border border-border/80 bg-card md:block">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[760px] text-left text-sm">
           <thead className="border-b border-border bg-secondary/50">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
@@ -134,6 +167,7 @@ export function AdminUsersTable() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

@@ -1,44 +1,53 @@
-import { PageShell } from "@/components/ecospark/page-shell";
-import { SectionHeading } from "@/components/ecospark/section-heading";
+import type { Metadata } from "next";
+import { ArrowRight } from "lucide-react";
 
-const posts = [
-  {
-    title: "How community review makes sustainability platforms credible",
-    excerpt:
-      "A moderation model is only useful when it is visible. EcoSpark Hub keeps member trust by making each idea status legible.",
-    date: "March 26, 2026",
-  },
-  {
-    title: "When a sustainability idea should become a paid implementation guide",
-    excerpt:
-      "Premium access works best when it wraps detailed execution knowledge, not basic community discovery.",
-    date: "March 18, 2026",
-  },
-  {
-    title: "Designing public idea spaces that encourage follow-through",
-    excerpt:
-      "Votes, comments, and clear ownership are stronger signals than generic engagement metrics when ideas need traction.",
-    date: "March 10, 2026",
-  },
-];
+import { PageShell } from "@/components/ecospark/page-shell";
+import { blogPosts } from "@/data/mock-content";
+
+export const metadata: Metadata = {
+  title: "Blog | EcoSpark Hub",
+  description:
+    "Editorial notes on moderation, public idea platforms, and sustainability implementation.",
+};
 
 export default function BlogPage() {
+  const [featuredPost, ...otherPosts] = blogPosts;
+
   return (
-    <PageShell className="space-y-10">
-      <SectionHeading
-        eyebrow="Blog"
-        title="Editorial notes on moderation, community design, and green implementation"
-        description="This section gives the project a portfolio-ready editorial layer beyond the assignment minimum."
-      />
-      <div className="grid gap-4 md:grid-cols-3">
-        {posts.map((post) => (
-          <article key={post.title} className="rounded-[28px] border border-border/80 bg-card p-6">
+    <PageShell className="space-y-12 py-14 md:py-16">
+      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.32em] text-primary">Blog</p>
+          <h1 className="mt-4 max-w-4xl text-4xl font-semibold tracking-tight text-balance md:text-5xl">
+            Editorial thinking on moderation, idea quality, and sustainability execution.
+          </h1>
+          <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
+            The blog gives the project a more complete public voice and explains the product logic
+            behind community-backed idea platforms.
+          </p>
+        </div>
+
+        <article className="rounded-[32px] border border-border/80 bg-card p-6 shadow-sm lg:p-8">
+          <p className="text-sm text-muted-foreground">{featuredPost.date}</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight">{featuredPost.title}</h2>
+          <p className="mt-4 text-sm leading-7 text-muted-foreground">{featuredPost.excerpt}</p>
+          <p className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+            Featured editorial
+            <ArrowRight className="size-4" />
+          </p>
+        </article>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {otherPosts.map((post) => (
+          <article key={post.slug} className="rounded-[28px] border border-border/80 bg-card p-6 shadow-sm">
             <p className="text-sm text-muted-foreground">{post.date}</p>
-            <h2 className="mt-3 text-2xl font-semibold">{post.title}</h2>
+            <h2 className="mt-3 text-2xl font-semibold tracking-tight">{post.title}</h2>
             <p className="mt-4 text-sm leading-7 text-muted-foreground">{post.excerpt}</p>
+            <p className="mt-6 text-sm font-semibold text-primary">Editorial archive</p>
           </article>
         ))}
-      </div>
+      </section>
     </PageShell>
   );
 }

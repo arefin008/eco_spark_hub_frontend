@@ -43,9 +43,9 @@ export function AdminIdeaReview() {
   });
 
   return (
-    <div className="space-y-8 px-6 py-10 lg:px-10">
-      <div className="rounded-[28px] border border-border/80 bg-card p-6">
-        <h1 className="text-3xl font-semibold tracking-tight">Admin idea review</h1>
+    <div className="space-y-6 px-4 py-8 sm:px-6 lg:px-10">
+      <div className="rounded-[24px] border border-border/80 bg-card p-5 sm:rounded-[28px] sm:p-6">
+        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Admin idea review</h1>
         <p className="mt-2 max-w-3xl text-sm text-muted-foreground">
           The backend exposes review actions by idea ID but does not currently expose a
           dedicated admin listing endpoint for under-review or rejected ideas. This panel
@@ -53,7 +53,7 @@ export function AdminIdeaReview() {
         </p>
 
         <form
-          className="mt-6 flex flex-col gap-3 md:flex-row"
+          className="mt-6 flex flex-col gap-3 sm:flex-row"
           onSubmit={(event) => {
             event.preventDefault();
             setSelectedId(ideaId.trim());
@@ -73,7 +73,7 @@ export function AdminIdeaReview() {
       </div>
 
       {targetIdeaQuery.data && ideaHasAccess(targetIdeaQuery.data) ? (
-        <div className="rounded-[28px] border border-border/80 bg-card p-6">
+        <div className="rounded-[24px] border border-border/80 bg-card p-5 sm:rounded-[28px] sm:p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
             {targetIdeaQuery.data.status.replaceAll("_", " ")}
           </p>
@@ -92,7 +92,7 @@ export function AdminIdeaReview() {
             className="mt-5 min-h-24 w-full rounded-2xl border border-border bg-background px-4 py-3 outline-none"
           />
 
-          <div className="mt-4 flex flex-wrap gap-3">
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Button onClick={() => reviewMutation.mutate({ action: "APPROVE" })}>
               Approve
             </Button>
@@ -111,13 +111,13 @@ export function AdminIdeaReview() {
         </div>
       ) : null}
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         {publicIdeasQuery.data?.data.map((idea) => (
-          <article key={idea.id} className="rounded-[28px] border border-border/80 bg-card p-6">
+          <article key={idea.id} className="rounded-[24px] border border-border/80 bg-card p-5 sm:rounded-[28px] sm:p-6">
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
               Approved idea
             </p>
-            <h3 className="mt-2 text-2xl font-semibold">{idea.title}</h3>
+            <h3 className="mt-2 text-xl font-semibold sm:text-2xl">{idea.title}</h3>
             <p className="mt-2 text-sm text-muted-foreground">
               ID: <span className="font-mono text-xs">{idea.id}</span>
             </p>

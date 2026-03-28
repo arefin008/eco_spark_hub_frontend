@@ -13,19 +13,19 @@ export function PurchasesPanel() {
   });
 
   return (
-    <div className="space-y-4 px-6 py-10 lg:px-10">
-      <div className="rounded-[28px] border border-border/80 bg-card p-6">
-        <h1 className="text-3xl font-semibold tracking-tight">Purchased ideas</h1>
+    <div className="space-y-4 px-4 py-8 sm:px-6 lg:px-10">
+      <div className="rounded-[24px] border border-border/80 bg-card p-5 sm:rounded-[28px] sm:p-6">
+        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Purchased ideas</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Track premium idea payments and revisit purchased access.
         </p>
       </div>
 
       {(purchasesQuery.data ?? []).map((purchase) => (
-        <article key={purchase.id} className="rounded-[28px] border border-border/80 bg-card p-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+        <article key={purchase.id} className="rounded-[24px] border border-border/80 bg-card p-5 sm:rounded-[28px] sm:p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-2xl font-semibold">{purchase.idea.title}</h2>
+              <h2 className="text-xl font-semibold sm:text-2xl">{purchase.idea.title}</h2>
               <p className="mt-2 text-sm text-muted-foreground">
                 {purchase.status} • {formatCurrency(purchase.amount, purchase.currency)} •{" "}
                 {formatDate(purchase.createdAt)}

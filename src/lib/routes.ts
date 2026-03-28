@@ -1,3 +1,12 @@
+import {
+  ClipboardList,
+  FolderKanban,
+  LayoutDashboard,
+  Lightbulb,
+  ShoppingBag,
+  Users,
+} from "lucide-react";
+
 export const publicNavLinks = [
   { href: "/", label: "Home" },
   { href: "/ideas", label: "Ideas" },
@@ -7,17 +16,15 @@ export const publicNavLinks = [
 ];
 
 export const memberDashboardLinks = [
-  { href: "/dashboard", label: "Overview" },
-  { href: "/dashboard/member/ideas", label: "My Ideas" },
-  { href: "/dashboard/member/purchases", label: "Purchases" },
-  { href: "/my-profile", label: "My Profile" },
-  { href: "/ideas", label: "Public Ideas" },
+  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard/member/ideas", label: "My Ideas", icon: FolderKanban },
+  { href: "/dashboard/member/purchases", label: "Purchases", icon: ShoppingBag },
+  { href: "/ideas", label: "Public Ideas", icon: Lightbulb },
 ];
 
 export const adminDashboardLinks = [
-  { href: "/dashboard", label: "Overview" },
-  { href: "/dashboard/admin/ideas", label: "Idea Review" },
-  { href: "/dashboard/admin/users", label: "Users" },
-  { href: "/my-profile", label: "My Profile" },
-  { href: "/ideas", label: "Public Ideas" },
+  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard/admin/ideas", label: "Idea Review", icon: ClipboardList },
+  { href: "/dashboard/admin/users", label: "Users", icon: Users },
+  { href: "/ideas", label: "Public Ideas", icon: Lightbulb },
 ];

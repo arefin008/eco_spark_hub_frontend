@@ -1,118 +1,147 @@
-"use client";
-
-import { useQuery } from "@tanstack/react-query";
-import { Lightbulb, Search, Sparkles, Vote } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
+import { Lightbulb, Search, ShieldCheck, Vote } from "lucide-react";
 
 import { IdeaCard } from "@/components/ecospark/idea-card";
 import { NewsletterForm } from "@/components/ecospark/newsletter-form";
 import { PageShell } from "@/components/ecospark/page-shell";
 import { SectionHeading } from "@/components/ecospark/section-heading";
-import { ideaService } from "@/services/idea.service";
+import { getFeaturedIdeas } from "@/lib/server/public-ideas";
 
 const featureHighlights = [
   {
     icon: Search,
-    title: "Discover",
-    description: "Search by title, category, votes, and payment status.",
+    title: "Find strong ideas faster",
+    description: "Browse approved ideas with search, category filters, and clear free or paid access states.",
   },
   {
     icon: Vote,
-    title: "Validate",
-    description: "Up-votes and comments make demand and credibility visible.",
+    title: "Let the community rank them",
+    description: "Votes and comments reveal which sustainability proposals have real momentum.",
   },
   {
     icon: Lightbulb,
-    title: "Publish",
-    description: "Draft, refine, and submit ideas for admin review.",
+    title: "Publish with structure",
+    description: "Members can submit clear proposals with problem statements, solutions, and implementation detail.",
   },
   {
-    icon: Sparkles,
-    title: "Monetize",
-    description: "Sell premium ideas while free knowledge stays public.",
+    icon: ShieldCheck,
+    title: "Keep moderation visible",
+    description: "Admin review keeps the public feed focused while preserving a transparent workflow.",
   },
 ];
 
-export default function HomePage() {
-  const featuredIdeasQuery = useQuery({
-    queryKey: ["ideas", "featured-home"],
-    queryFn: () => ideaService.list({ limit: 6, sortBy: "TOP_VOTED" }),
-  });
+const processSteps = [
+  {
+    title: "Publish an idea",
+    description: "Members create sustainability proposals with practical context and optional premium access.",
+  },
+  {
+    title: "Gather public feedback",
+    description: "Community votes and discussion help strong ideas stand out without burying the essentials.",
+  },
+  {
+    title: "Move into execution",
+    description: "Approved ideas remain discoverable, and premium implementation guidance can support deeper action.",
+  },
+];
+
+export const metadata: Metadata = {
+  title: "EcoSpark Hub",
+  description:
+    "Discover, validate, and publish sustainability ideas through a clean public platform built for members and admins.",
+};
+
+export default async function HomePage() {
+  const featuredIdeas = await getFeaturedIdeas();
 
   return (
     <>
-      <section className="border-b border-border bg-[radial-gradient(circle_at_top_left,rgba(36,191,122,0.18),transparent_35%),radial-gradient(circle_at_top_right,rgba(244,186,67,0.14),transparent_28%),linear-gradient(180deg,var(--background),color-mix(in_oklab,var(--background)_92%,white))]">
-        <PageShell className="py-16 md:py-20">
-          <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+      <section className="border-b border-border bg-[radial-gradient(circle_at_top_left,color-mix(in_srgb,var(--primary)_16%,transparent),transparent_34%),radial-gradient(circle_at_top_right,color-mix(in_srgb,var(--secondary)_14%,transparent),transparent_28%),linear-gradient(180deg,color-mix(in_oklab,var(--background)_94%,white),var(--background))]">
+        <PageShell className="py-12 sm:py-14 md:py-20">
+          <div className="grid gap-6 sm:gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div className="space-y-6">
-              <span className="inline-flex rounded-full border border-emerald-300/80 bg-emerald-100/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.32em] text-emerald-950">
+              <span className="inline-flex rounded-full border border-primary/15 bg-primary/10 px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-primary sm:px-4 sm:text-xs sm:tracking-[0.32em]">
                 Community Sustainability Portal
               </span>
-              <h1 className="max-w-4xl text-5xl font-semibold tracking-tight text-balance md:text-6xl">
-                Turn grounded environmental ideas into visible public action.
+              <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl md:text-6xl">
+                Cleaner public idea sharing for sustainability projects that deserve real traction.
               </h1>
-              <p className="max-w-2xl text-base leading-8 text-muted-foreground md:text-lg">
-                Members publish sustainability ideas, collect votes, discuss feasibility,
-                and share premium implementation guides through secure paid access when needed.
+              <p className="max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8 md:text-lg">
+                EcoSpark Hub gives members a focused place to publish ideas, gather support,
+                and unlock implementation guidance without cluttering the experience.
               </p>
-              <div className="flex flex-wrap gap-3">
-                <Link href="/ideas" className="rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <Link
+                  href="/ideas"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-[0_18px_36px_-24px_color-mix(in_oklab,var(--primary)_90%,black)] transition hover:-translate-y-0.5"
+                >
                   Explore Ideas
                 </Link>
-                <Link href="/register" className="rounded-full border border-border bg-background px-5 py-3 text-sm font-semibold">
+                <Link
+                  href="/register"
+                  className="rounded-full border border-border bg-background px-5 py-3 text-center text-sm font-semibold transition hover:bg-muted/60"
+                >
                   Become a Member
                 </Link>
               </div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-              {featureHighlights.map((item) => (
-                <div key={item.title} className="rounded-[28px] border border-border/80 bg-card/90 p-5 shadow-sm">
-                  <item.icon className="size-5 text-primary" />
-                  <h2 className="mt-5 text-xl font-semibold">{item.title}</h2>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    {item.description}
-                  </p>
-                </div>
-              ))}
+            <div className="rounded-[28px] border border-border/80 bg-card p-4 shadow-sm sm:rounded-[32px] sm:p-5">
+              <div className="grid gap-4 sm:grid-cols-2">
+                {featureHighlights.map((item) => (
+                  <div key={item.title} className="rounded-[22px] border border-border/70 bg-muted/70 p-4 sm:rounded-[24px] sm:p-5">
+                    <div className="flex size-10 items-center justify-center rounded-2xl bg-primary/12 text-primary">
+                      <item.icon className="size-5" />
+                    </div>
+                    <h2 className="mt-4 text-lg font-semibold">{item.title}</h2>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                      {item.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </PageShell>
       </section>
 
-      <PageShell className="space-y-10 py-14">
+      <PageShell className="space-y-8 py-12 sm:space-y-10 md:py-16">
         <SectionHeading
           eyebrow="Featured ideas"
           title="Top-voted sustainability proposals from the community"
-          description="This section is powered by the live ideas endpoint, sorted by the strongest public support."
+          description="Rendered on the server so the public feed stays indexable and loads with content."
         />
         <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-          {featuredIdeasQuery.data?.data.map((idea) => (
+          {featuredIdeas.map((idea) => (
             <IdeaCard key={idea.id} idea={idea} />
           ))}
         </div>
-        {featuredIdeasQuery.isLoading ? (
-          <p className="text-sm text-muted-foreground">Loading featured ideas...</p>
-        ) : null}
       </PageShell>
 
-      <section className="border-y border-border bg-secondary/35">
-        <PageShell className="grid gap-6 py-14 md:grid-cols-3">
-          {[
-            ["1", "Submit ideas with categories, pricing, and media-ready links."],
-            ["2", "Admins review submissions and members unlock premium plans via Stripe."],
-            ["3", "Discussion, votes, and comments keep the best ideas moving forward."],
-          ].map(([index, copy]) => (
-            <div key={index} className="rounded-[28px] border border-border/80 bg-card p-6">
-              <p className="text-5xl font-semibold text-primary">{index}</p>
-              <p className="mt-4 text-sm leading-7 text-muted-foreground">{copy}</p>
-            </div>
-          ))}
+      <section className="border-y border-border bg-secondary/30">
+        <PageShell className="py-12 md:py-16">
+          <SectionHeading
+            eyebrow="How It Works"
+            title="A straightforward workflow from idea to implementation"
+            description="Publish, validate with the community, and move strong ideas into action."
+          />
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {processSteps.map((step, index) => (
+              <div key={step.title} className="rounded-[24px] border border-border/80 bg-card p-5 sm:rounded-[28px] sm:p-6">
+                <div className="flex size-11 items-center justify-center rounded-2xl bg-primary text-lg font-semibold text-primary-foreground">
+                  {index + 1}
+                </div>
+                <h3 className="mt-5 text-xl font-semibold tracking-tight">{step.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">{step.description}</p>
+              </div>
+            ))}
+          </div>
         </PageShell>
       </section>
 
-      <PageShell className="py-14">
-        <div className="rounded-[36px] border border-border/80 bg-card p-8">
+      <PageShell className="py-12 md:py-16">
+        <div className="rounded-[28px] border border-border/80 bg-card p-5 sm:rounded-[36px] sm:p-8">
           <SectionHeading
             eyebrow="Newsletter"
             title="Get updates on new approvals, top-voted ideas, and platform announcements"

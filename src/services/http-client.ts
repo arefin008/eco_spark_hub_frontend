@@ -1,10 +1,10 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
+import { appConfig } from "@/lib/app-config";
 import { apiEndpoints } from "@/lib/api-endpoints";
 import type { ApiErrorResponse } from "@/types/api";
 
-const baseURL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000/api/v1";
+const baseURL = appConfig.apiBaseUrl;
 
 const refreshClient = axios.create({
   baseURL,

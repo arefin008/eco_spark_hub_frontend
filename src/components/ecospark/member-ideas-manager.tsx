@@ -137,11 +137,11 @@ export function MemberIdeasManager() {
   }
 
   return (
-    <div className="space-y-8 px-6 py-10 lg:px-10">
+    <div className="space-y-6 px-4 py-8 sm:px-6 lg:px-10">
       <div className="grid gap-8 xl:grid-cols-[1.05fr_0.95fr]">
         <Card>
           <CardHeader>
-            <CardTitle className="text-3xl tracking-tight">
+            <CardTitle className="text-2xl tracking-tight sm:text-3xl">
               {editingIdea ? "Edit draft" : "Create a new idea"}
             </CardTitle>
             <CardDescription>
@@ -259,7 +259,7 @@ export function MemberIdeasManager() {
               </form.Field>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Button type="submit" disabled={saveMutation.isPending}>
                 {saveMutation.isPending
                   ? "Saving..."
@@ -286,13 +286,13 @@ export function MemberIdeasManager() {
 
         <section className="space-y-4">
           {(ideasQuery.data ?? []).map((idea) => (
-            <article key={idea.id} className="rounded-[28px] border border-border/80 bg-card p-6">
+            <article key={idea.id} className="rounded-[24px] border border-border/80 bg-card p-5 sm:rounded-[28px] sm:p-6">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
                     {idea.status.replaceAll("_", " ")}
                   </p>
-                  <h2 className="mt-2 text-2xl font-semibold">{idea.title}</h2>
+                  <h2 className="mt-2 text-xl font-semibold sm:text-2xl">{idea.title}</h2>
                   <p className="mt-2 text-sm text-muted-foreground">
                     {idea.category.name} • {formatDate(idea.createdAt)}
                   </p>
@@ -310,7 +310,7 @@ export function MemberIdeasManager() {
                 </p>
               ) : null}
 
-              <div className="mt-5 flex flex-wrap gap-3">
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 {idea.status !== "APPROVED" ? (
                   <Button variant="outline" onClick={() => hydrateIdeaForm(idea)}>
                     <Pencil className="size-4" />

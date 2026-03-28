@@ -67,12 +67,12 @@ export function IdeaDetailsClient({ ideaId }: { ideaId: string }) {
             {idea.category.name}
           </span>
           {idea.isPaid ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 font-medium text-amber-900">
+            <span className="inline-flex items-center gap-1 rounded-full bg-accent/18 px-3 py-1 font-medium text-accent-foreground">
               <BadgeDollarSign className="size-3" />
               {formatCurrency(idea.price)}
             </span>
           ) : (
-            <span className="rounded-full bg-emerald-100 px-3 py-1 font-medium text-emerald-900">
+            <span className="rounded-full bg-primary/12 px-3 py-1 font-medium text-primary">
               Free idea
             </span>
           )}
@@ -98,7 +98,7 @@ export function IdeaDetailsClient({ ideaId }: { ideaId: string }) {
                     onClick={() => voteMutation.mutate({ type: "UPVOTE" })}
                     disabled={!currentUser || voteMutation.isPending}
                   >
-                    <ThumbsUp className="size-4 text-emerald-600" />
+                    <ThumbsUp className="size-4 text-primary" />
                     {idea.upvotes}
                   </Button>
                   <Button
@@ -142,9 +142,9 @@ export function IdeaDetailsClient({ ideaId }: { ideaId: string }) {
             </div>
 
             {currentUser?.role === "ADMIN" ? (
-              <div className="mt-8 rounded-[28px] border border-emerald-500/20 bg-emerald-500/5 p-6">
+              <div className="mt-8 rounded-[28px] border border-primary/20 bg-primary/6 p-6">
                 <div className="flex items-start gap-3">
-                  <ShieldCheck className="mt-0.5 size-5 text-emerald-700" />
+                  <ShieldCheck className="mt-0.5 size-5 text-primary" />
                   <div className="space-y-3">
                     <h2 className="text-xl font-semibold">Admin moderation</h2>
                     <p className="text-sm text-muted-foreground">
@@ -162,7 +162,7 @@ export function IdeaDetailsClient({ ideaId }: { ideaId: string }) {
             ) : null}
           </>
         ) : (
-          <div className="mt-8 rounded-[32px] border border-amber-400/40 bg-amber-50 p-8 text-amber-950">
+          <div className="mt-8 rounded-[32px] border border-accent/35 bg-accent/12 p-8 text-foreground">
             <div className="flex items-start gap-4">
               <Lock className="mt-1 size-6" />
               <div className="space-y-4">

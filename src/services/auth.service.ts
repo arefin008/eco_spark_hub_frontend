@@ -1,3 +1,4 @@
+import { appConfig } from "@/lib/app-config";
 import { apiEndpoints } from "@/lib/api-endpoints";
 import type { ApiResponse } from "@/types/api";
 import type { AuthPayload, User } from "@/types/domain";
@@ -32,6 +33,9 @@ export interface ResetPasswordInput {
 }
 
 export const authService = {
+  getGoogleAuthUrl() {
+    return appConfig.googleAuthUrl;
+  },
   async register(payload: RegisterInput) {
     const { data } = await httpClient.post<ApiResponse<AuthPayload>>(
       apiEndpoints.auth.register,

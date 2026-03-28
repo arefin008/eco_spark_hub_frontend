@@ -211,10 +211,10 @@ export function ProfilePanel() {
         animate={{ opacity: 1, y: 0 }}
         transition={sectionTransition}
       >
-        <Card className="overflow-hidden border-border/70 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.12),_transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.96),rgba(236,253,245,0.85))] shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:bg-[radial-gradient(circle_at_top_left,_rgba(52,211,153,0.18),_transparent_35%),linear-gradient(140deg,rgba(5,18,14,0.98),rgba(9,31,25,0.96))]">
+        <Card className="overflow-hidden border-border/70 bg-[radial-gradient(circle_at_top_left,_rgba(0,173,181,0.12),_transparent_34%),linear-gradient(135deg,rgba(255,255,255,0.98),rgba(238,238,238,0.92))] shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:bg-[radial-gradient(circle_at_top_left,_rgba(0,173,181,0.14),_transparent_35%),linear-gradient(140deg,rgba(34,40,49,0.98),rgba(57,62,70,0.96))]">
           <CardContent className="grid gap-6 p-7 lg:grid-cols-[1.25fr_0.75fr]">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-emerald-900 dark:border-white/10 dark:bg-white/8 dark:text-emerald-100">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-foreground dark:border-white/10 dark:bg-white/8 dark:text-foreground">
                 <Sparkles className="size-3.5" />
                 Account center
               </div>
@@ -249,7 +249,7 @@ export function ProfilePanel() {
                   {currentUser.emailVerified ? (
                     <CheckCircle2 className="size-5 text-primary" />
                   ) : (
-                    <ShieldAlert className="size-5 text-amber-600" />
+                    <ShieldAlert className="size-5 text-accent" />
                   )}
                   <div>
                     <p className="text-sm font-semibold">Email status</p>
@@ -375,7 +375,7 @@ export function ProfilePanel() {
             </CardHeader>
             <CardContent className="space-y-4">
               {currentUser.emailVerified ? (
-                <div className="rounded-[28px] border border-emerald-200 bg-emerald-50 p-5 text-emerald-900 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-100">
+                <div className="rounded-[28px] border border-primary/20 bg-primary/10 p-5 text-foreground dark:text-foreground">
                   <div className="flex items-center gap-3">
                     <MailCheck className="size-5" />
                     <div>

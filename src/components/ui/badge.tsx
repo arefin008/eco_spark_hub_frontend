@@ -9,8 +9,8 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default: "bg-secondary text-secondary-foreground",
-        success: "bg-emerald-100 text-emerald-900",
-        warning: "bg-amber-100 text-amber-900",
+        success: "bg-primary/12 text-primary",
+        warning: "bg-accent/18 text-accent-foreground",
         outline: "border border-border bg-background text-foreground",
       },
     },

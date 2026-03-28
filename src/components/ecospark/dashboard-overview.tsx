@@ -58,12 +58,12 @@ export function DashboardOverview() {
   });
 
   if (isLoading) {
-    return <div className="px-6 py-10 text-muted-foreground">Loading dashboard...</div>;
+    return <div className="px-4 py-8 text-muted-foreground sm:px-6 lg:px-10">Loading dashboard...</div>;
   }
 
   if (!currentUser) {
     return (
-      <div className="px-6 py-10">
+      <div className="px-4 py-8 sm:px-6 lg:px-10">
         <div className="rounded-[28px] border border-border bg-card p-8">
           <h1 className="text-3xl font-semibold">Dashboard access</h1>
           <p className="mt-3 text-muted-foreground">
@@ -84,29 +84,29 @@ export function DashboardOverview() {
     ];
 
     return (
-      <div className="space-y-8 px-6 py-10 lg:px-10">
+      <div className="space-y-6 px-4 py-8 sm:px-6 lg:px-10">
         <div className="space-y-3">
           <p className="text-xs font-semibold uppercase tracking-[0.32em] text-primary">
             Admin overview
           </p>
-          <h1 className="text-4xl font-semibold tracking-tight">
+          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
             Moderation and platform health
           </h1>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {adminStatCards.map((item) => (
-            <div key={item.label} className="rounded-[28px] border border-border/80 bg-card p-6">
+            <div key={item.label} className="rounded-[24px] border border-border/80 bg-card p-5 sm:rounded-[28px] sm:p-6">
               <item.icon className="size-5 text-primary" />
               <p className="mt-5 text-sm text-muted-foreground">{item.label}</p>
-              <p className="mt-1 text-4xl font-semibold">{stats[item.key]}</p>
+              <p className="mt-1 text-3xl font-semibold sm:text-4xl">{stats[item.key]}</p>
             </div>
           ))}
         </div>
 
-        <div className="rounded-[28px] border border-border/80 bg-card p-6">
+        <div className="rounded-[24px] border border-border/80 bg-card p-5 sm:rounded-[28px] sm:p-6">
           <h2 className="text-2xl font-semibold">Idea pipeline</h2>
-          <div className="mt-6 h-72">
+          <div className="mt-6 h-64 sm:h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -128,12 +128,12 @@ export function DashboardOverview() {
   const reviewCount = myIdeas.filter((idea) => idea.status === "UNDER_REVIEW").length;
 
   return (
-    <div className="space-y-8 px-6 py-10 lg:px-10">
+    <div className="space-y-6 px-4 py-8 sm:px-6 lg:px-10">
       <div className="space-y-3">
         <p className="text-xs font-semibold uppercase tracking-[0.32em] text-primary">
           Member overview
         </p>
-        <h1 className="text-4xl font-semibold tracking-tight">
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Track your ideas and premium access
         </h1>
       </div>
@@ -143,10 +143,10 @@ export function DashboardOverview() {
           const item = memberStatCards[index];
 
           return (
-            <div key={item.label} className="rounded-[28px] border border-border/80 bg-card p-6">
+            <div key={item.label} className="rounded-[24px] border border-border/80 bg-card p-5 sm:rounded-[28px] sm:p-6">
               <item.icon className="size-5 text-primary" />
               <p className="mt-5 text-sm text-muted-foreground">{item.label}</p>
-              <p className="mt-1 text-4xl font-semibold">{value}</p>
+              <p className="mt-1 text-3xl font-semibold sm:text-4xl">{value}</p>
             </div>
           );
         })}
