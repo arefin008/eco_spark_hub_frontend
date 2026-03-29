@@ -14,6 +14,8 @@ const sortOptions = [
   { value: "TOP_VOTED", label: "Top Voted" },
   { value: "MOST_COMMENTED", label: "Most Commented" },
 ] as const;
+const PAGE_SIZE = 10;
+const FILTER_FETCH_LIMIT = 100;
 
 export function IdeaBrowser() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -43,13 +45,38 @@ export function IdeaBrowser() {
         searchTerm: deferredSearchTerm,
         categoryId: categoryId || undefined,
         paymentStatus: paymentStatus || undefined,
+        isPaid:
+          paymentStatus === "PAID"
+            ? true
+            : paymentStatus === "FREE"
+              ? false
+              : undefined,
         sortBy,
-        page,
+        page: paymentStatus ? 1 : page,
+        limit: paymentStatus ? FILTER_FETCH_LIMIT : PAGE_SIZE,
       }),
   });
 
-  const total = ideasQuery.data?.meta?.total ?? ideasQuery.data?.data.length ?? 0;
-  const maxPages = Math.max(1, Math.ceil(total / 10));
+  const filteredIdeas = (ideasQuery.data?.data ?? []).filter((idea) => {
+    if (paymentStatus === "PAID") {
+      return idea.isPaid;
+    }
+
+    if (paymentStatus === "FREE") {
+      return !idea.isPaid;
+    }
+
+    return true;
+  });
+  const paginatedIdeas = paymentStatus
+    ? filteredIdeas.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+    : filteredIdeas;
+
+  const total =
+    paymentStatus === ""
+      ? ideasQuery.data?.meta?.total ?? ideasQuery.data?.data.length ?? 0
+      : filteredIdeas.length;
+  const maxPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return (
     <div className="mt-10 grid gap-6 xl:grid-cols-[320px_1fr]">
@@ -135,18 +162,18 @@ export function IdeaBrowser() {
           <p className="text-sm text-muted-foreground">
             {ideasQuery.isLoading
               ? "Loading ideas..."
-              : `Showing ${ideasQuery.data?.data.length ?? 0} ideas across ${total} results`}
+              : `Showing ${paginatedIdeas.length} ideas across ${total} results`}
           </p>
           <p className="text-sm text-muted-foreground">Page {page} of {maxPages}</p>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-2">
-          {ideasQuery.data?.data.map((idea) => (
+          {paginatedIdeas.map((idea) => (
             <IdeaCard key={idea.id} idea={idea} />
           ))}
         </div>
 
-        {!ideasQuery.isLoading && !ideasQuery.data?.data.length ? (
+        {!ideasQuery.isLoading && !filteredIdeas.length ? (
           <div className="rounded-[28px] border border-dashed border-border px-6 py-12 text-center text-muted-foreground">
             No approved ideas matched your filters.
           </div>

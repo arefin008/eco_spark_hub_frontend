@@ -4,8 +4,9 @@ import { motion } from "framer-motion";
 import { OTPInput } from "input-otp";
 import {
   CheckCircle2,
+  Eye,
+  EyeOff,
   KeyRound,
-  LogOut,
   MailCheck,
   ShieldAlert,
   Sparkles,
@@ -13,7 +14,6 @@ import {
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -72,13 +72,60 @@ function FieldError({ message }: { message?: string }) {
   return <p className="text-sm text-destructive">{message}</p>;
 }
 
+function PasswordField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  error,
+  visible,
+  onToggleVisibility,
+  autoComplete,
+  inputName,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  error?: string;
+  visible: boolean;
+  onToggleVisibility: () => void;
+  autoComplete?: string;
+  inputName: string;
+}) {
+  return (
+    <label className="block space-y-2">
+      <span className="text-sm font-medium">{label}</span>
+      <div className="relative">
+        <Input
+          type={visible ? "text" : "password"}
+          name={inputName}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder={placeholder}
+          autoComplete={autoComplete}
+          className="pr-11"
+        />
+        <button
+          type="button"
+          onClick={onToggleVisibility}
+          className="absolute inset-y-0 right-0 inline-flex w-11 items-center justify-center text-muted-foreground transition hover:text-foreground"
+          aria-label={visible ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
+        >
+          {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+        </button>
+      </div>
+      <FieldError message={error} />
+    </label>
+  );
+}
+
 const sectionTransition = {
   duration: 0.4,
   ease: [0.22, 1, 0.36, 1] as const,
 };
 
 export function ProfilePanel() {
-  const router = useRouter();
   const queryClient = useQueryClient();
   const { data: currentUser, isLoading } = useCurrentUser();
   const [passwordErrors, setPasswordErrors] = useState<
@@ -88,6 +135,11 @@ export function ProfilePanel() {
   const [resetErrors, setResetErrors] = useState<
     Partial<Record<"otp" | "newPassword" | "confirmPassword", string>>
   >({});
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showResetNewPassword, setShowResetNewPassword] = useState(false);
+  const [showResetConfirmPassword, setShowResetConfirmPassword] = useState(false);
 
   const changePasswordMutation = useMutation({
     mutationFn: authService.changePassword,
@@ -125,15 +177,7 @@ export function ProfilePanel() {
     onError: (error) => toast.error(error.message),
   });
 
-  const logoutMutation = useMutation({
-    mutationFn: authService.logout,
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["current-user"] });
-      toast.success("Logged out.");
-      router.push("/");
-    },
-    onError: (error) => toast.error(error.message),
-  });
+ 
 
   const passwordForm = useForm({
     defaultValues: {
@@ -272,15 +316,6 @@ export function ProfilePanel() {
                 ) : null}
               </div>
 
-              <Button
-                variant="outline"
-                className="justify-between"
-                onClick={() => logoutMutation.mutate()}
-                disabled={logoutMutation.isPending}
-              >
-                {logoutMutation.isPending ? "Logging out..." : "Log out"}
-                <LogOut className="size-4" />
-              </Button>
             </div>
           </CardContent>
         </Card>
@@ -310,46 +345,49 @@ export function ProfilePanel() {
               >
                 <passwordForm.Field name="currentPassword">
                   {(field) => (
-                    <label className="block space-y-2">
-                      <span className="text-sm font-medium">Current password</span>
-                      <Input
-                        type="password"
-                        value={field.state.value}
-                        onChange={(event) => field.handleChange(event.target.value)}
-                        placeholder="Current password"
-                      />
-                      <FieldError message={passwordErrors.currentPassword} />
-                    </label>
+                    <PasswordField
+                      label="Current password"
+                      inputName="account-current-password"
+                      value={field.state.value}
+                      onChange={field.handleChange}
+                      placeholder="Current password"
+                      error={passwordErrors.currentPassword}
+                      visible={showCurrentPassword}
+                      onToggleVisibility={() => setShowCurrentPassword((value) => !value)}
+                      autoComplete="current-password"
+                    />
                   )}
                 </passwordForm.Field>
 
                 <passwordForm.Field name="newPassword">
                   {(field) => (
-                    <label className="block space-y-2">
-                      <span className="text-sm font-medium">New password</span>
-                      <Input
-                        type="password"
-                        value={field.state.value}
-                        onChange={(event) => field.handleChange(event.target.value)}
-                        placeholder="At least 6 characters"
-                      />
-                      <FieldError message={passwordErrors.newPassword} />
-                    </label>
+                    <PasswordField
+                      label="New password"
+                      inputName="account-new-password"
+                      value={field.state.value}
+                      onChange={field.handleChange}
+                      placeholder="At least 6 characters"
+                      error={passwordErrors.newPassword}
+                      visible={showNewPassword}
+                      onToggleVisibility={() => setShowNewPassword((value) => !value)}
+                      autoComplete="new-password"
+                    />
                   )}
                 </passwordForm.Field>
 
                 <passwordForm.Field name="confirmPassword">
                   {(field) => (
-                    <label className="block space-y-2">
-                      <span className="text-sm font-medium">Confirm new password</span>
-                      <Input
-                        type="password"
-                        value={field.state.value}
-                        onChange={(event) => field.handleChange(event.target.value)}
-                        placeholder="Repeat your new password"
-                      />
-                      <FieldError message={passwordErrors.confirmPassword} />
-                    </label>
+                    <PasswordField
+                      label="Confirm new password"
+                      inputName="account-confirm-password"
+                      value={field.state.value}
+                      onChange={field.handleChange}
+                      placeholder="Repeat your new password"
+                      error={passwordErrors.confirmPassword}
+                      visible={showConfirmPassword}
+                      onToggleVisibility={() => setShowConfirmPassword((value) => !value)}
+                      autoComplete="new-password"
+                    />
                   )}
                 </passwordForm.Field>
 
@@ -456,9 +494,13 @@ export function ProfilePanel() {
                   <label className="block space-y-2">
                     <span className="text-sm font-medium">OTP</span>
                     <Input
+                      name="account-reset-otp"
                       inputMode="numeric"
                       maxLength={6}
                       value={field.state.value}
+                      autoComplete="one-time-code"
+                      autoCorrect="off"
+                      spellCheck={false}
                       onChange={(event) => field.handleChange(event.target.value.replace(/\D/g, "").slice(0, 6))}
                       placeholder="6-digit code"
                     />
@@ -467,35 +509,37 @@ export function ProfilePanel() {
                 )}
               </resetForm.Field>
 
-              <resetForm.Field name="newPassword">
-                {(field) => (
-                  <label className="block space-y-2">
-                    <span className="text-sm font-medium">New password</span>
-                    <Input
-                      type="password"
+                <resetForm.Field name="newPassword">
+                  {(field) => (
+                    <PasswordField
+                      label="New password"
+                      inputName="account-reset-new-password"
                       value={field.state.value}
-                      onChange={(event) => field.handleChange(event.target.value)}
+                      onChange={field.handleChange}
                       placeholder="New password"
+                      error={resetErrors.newPassword}
+                      visible={showResetNewPassword}
+                      onToggleVisibility={() => setShowResetNewPassword((value) => !value)}
+                      autoComplete="new-password"
                     />
-                    <FieldError message={resetErrors.newPassword} />
-                  </label>
-                )}
-              </resetForm.Field>
+                  )}
+                </resetForm.Field>
 
-              <resetForm.Field name="confirmPassword">
-                {(field) => (
-                  <label className="block space-y-2">
-                    <span className="text-sm font-medium">Confirm password</span>
-                    <Input
-                      type="password"
+                <resetForm.Field name="confirmPassword">
+                  {(field) => (
+                    <PasswordField
+                      label="Confirm password"
+                      inputName="account-reset-confirm-password"
                       value={field.state.value}
-                      onChange={(event) => field.handleChange(event.target.value)}
+                      onChange={field.handleChange}
                       placeholder="Confirm password"
+                      error={resetErrors.confirmPassword}
+                      visible={showResetConfirmPassword}
+                      onToggleVisibility={() => setShowResetConfirmPassword((value) => !value)}
+                      autoComplete="new-password"
                     />
-                    <FieldError message={resetErrors.confirmPassword} />
-                  </label>
-                )}
-              </resetForm.Field>
+                  )}
+                </resetForm.Field>
 
               <div className="flex items-end">
                 <Button type="submit" disabled={resetPasswordMutation.isPending}>

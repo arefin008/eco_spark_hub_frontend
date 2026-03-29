@@ -10,6 +10,7 @@ export interface IdeaListParams {
   categoryId?: string;
   authorId?: string;
   paymentStatus?: "PAID" | "FREE";
+  isPaid?: boolean;
   minUpvotes?: number;
   sortBy?: "RECENT" | "TOP_VOTED" | "MOST_COMMENTED";
   page?: number;
@@ -39,6 +40,7 @@ export const ideaService = {
       categoryId: params?.categoryId,
       authorId: params?.authorId,
       paymentStatus: params?.paymentStatus,
+      isPaid: params?.isPaid,
       minUpvotes: params?.minUpvotes,
       sortBy: params?.sortBy,
       page: params?.page,

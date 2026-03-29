@@ -19,6 +19,7 @@ import { AuthGuard } from "@/components/ecospark/auth-guard";
 import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { authService } from "@/services/auth.service";
+import { completeClientLogout } from "@/lib/client-auth";
 import { cn } from "@/lib/utils";
 import { adminDashboardLinks, memberDashboardLinks } from "@/lib/routes";
 import type { UserRole } from "@/types/domain";
@@ -44,9 +45,8 @@ export default function DashboardLayout({
   const logoutMutation = useMutation({
     mutationFn: authService.logout,
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["current-user"] });
+      await completeClientLogout(queryClient, router, "/login");
       toast.success("Logged out.");
-      router.push("/");
     },
     onError: (error) => toast.error(error.message),
   });

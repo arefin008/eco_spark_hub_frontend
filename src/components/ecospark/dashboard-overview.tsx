@@ -58,6 +58,8 @@ export function DashboardOverview() {
     queryKey: ["admin-stats"],
     queryFn: adminService.stats,
     enabled: currentUser?.role === "ADMIN",
+    staleTime: 0,
+    refetchOnMount: "always",
   });
 
   if (isLoading) {

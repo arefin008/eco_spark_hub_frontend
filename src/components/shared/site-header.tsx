@@ -11,6 +11,7 @@ import { BrandMark } from "@/components/shared/brand-mark";
 import { ThemeToggle } from "@/components/ecospark/theme-toggle";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { completeClientLogout } from "@/lib/client-auth";
 import { publicNavLinks } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import { authService } from "@/services/auth.service";
@@ -55,10 +56,9 @@ export function SiteHeader() {
   const logoutMutation = useMutation({
     mutationFn: authService.logout,
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["current-user"] });
-      toast.success("Logged out.");
       setOpen(false);
-      router.push("/");
+      await completeClientLogout(queryClient, router, "/");
+      toast.success("Logged out.");
     },
     onError: (error) => toast.error(error.message),
   });

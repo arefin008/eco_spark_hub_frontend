@@ -9,5 +9,7 @@ export function useCurrentUser() {
     queryKey: ["current-user"],
     queryFn: authService.me,
     retry: false,
+    staleTime: 0,
+    refetchOnMount: "always",
   });
 }

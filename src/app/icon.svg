@@ -23,8 +23,8 @@
   />
   <defs>
     <linearGradient id="bg" x1="32" y1="30" x2="219" y2="225" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#1E8E5A" />
-      <stop offset="1" stop-color="#B3D448" />
+      <stop stop-color="#2563EB" />
+      <stop offset="1" stop-color="#0F766E" />
     </linearGradient>
   </defs>
 </svg>
