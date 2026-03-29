@@ -14,6 +14,7 @@ import { formatDate } from "@/lib/helpers";
 import { cn } from "@/lib/utils";
 import { adminService } from "@/services/admin.service";
 import { userService } from "@/services/user.service";
+import type { UserRole, UserStatus } from "@/types/domain";
 
 const userSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -33,8 +34,8 @@ export function AdminUserDetail({ userId }: { userId: string }) {
     defaultValues: {
       name: "",
       email: "",
-      role: "MEMBER" as const,
-      status: "ACTIVE" as const,
+      role: "MEMBER" as UserRole,
+      status: "ACTIVE" as UserStatus,
     },
     onSubmit: async ({ value }) => {
       const parsed = userSchema.safeParse(value);

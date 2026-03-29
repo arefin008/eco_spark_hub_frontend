@@ -4,10 +4,16 @@ import { useQuery } from "@tanstack/react-query";
 
 import { authService } from "@/services/auth.service";
 
-export function useCurrentUser() {
+interface UseCurrentUserOptions {
+  enabled?: boolean;
+  skipRefresh?: boolean;
+}
+
+export function useCurrentUser(options?: UseCurrentUserOptions) {
   return useQuery({
     queryKey: ["current-user"],
-    queryFn: authService.me,
+    queryFn: () => authService.me({ skipRefresh: options?.skipRefresh }),
+    enabled: options?.enabled,
     retry: false,
     staleTime: 0,
     refetchOnMount: "always",

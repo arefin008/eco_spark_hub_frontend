@@ -4,7 +4,9 @@ import { appConfig } from "@/lib/app-config";
 import { apiEndpoints } from "@/lib/api-endpoints";
 import type { ApiErrorResponse } from "@/types/api";
 
-const baseURL = appConfig.apiBaseUrl;
+const SKIP_AUTH_REFRESH_HEADER = "x-skip-auth-refresh";
+
+const baseURL = appConfig.clientApiBaseUrl;
 
 const refreshClient = axios.create({
   baseURL,
@@ -36,6 +38,7 @@ httpClient.interceptors.response.use(
       error.response?.status === 401 &&
       originalRequest &&
       !originalRequest._retry &&
+      !originalRequest.headers?.[SKIP_AUTH_REFRESH_HEADER] &&
       originalRequest.url !== apiEndpoints.auth.refreshToken
     ) {
       originalRequest._retry = true;
@@ -51,3 +54,5 @@ httpClient.interceptors.response.use(
     return Promise.reject(new Error(getApiErrorMessage(error)));
   },
 );
+
+export { SKIP_AUTH_REFRESH_HEADER };

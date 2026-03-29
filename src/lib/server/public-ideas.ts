@@ -8,15 +8,20 @@ export async function getFeaturedIdeas() {
     limit: 6,
     sortBy: "TOP_VOTED",
   });
-  const response = await fetch(`${appConfig.apiBaseUrl}/ideas?${query}`, {
-    next: { revalidate: 300 },
-  });
 
-  if (!response.ok) {
-    throw new Error("Failed to load featured ideas.");
+  try {
+    const response = await fetch(`${appConfig.apiBaseUrl}/ideas?${query}`, {
+      next: { revalidate: 300 },
+    });
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const payload = (await response.json()) as ApiResponse<Idea[]>;
+
+    return payload.data;
+  } catch {
+    return [];
   }
-
-  const payload = (await response.json()) as ApiResponse<Idea[]>;
-
-  return payload.data;
 }

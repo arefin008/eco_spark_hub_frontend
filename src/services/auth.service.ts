@@ -3,7 +3,7 @@ import { apiEndpoints } from "@/lib/api-endpoints";
 import type { ApiResponse } from "@/types/api";
 import type { AuthPayload, User } from "@/types/domain";
 
-import { httpClient } from "./http-client";
+import { httpClient, SKIP_AUTH_REFRESH_HEADER } from "./http-client";
 
 export interface RegisterInput {
   name: string;
@@ -35,6 +35,10 @@ export interface ResetPasswordInput {
 interface SocialSignInResponse {
   url: string;
   redirect: boolean;
+}
+
+interface MeOptions {
+  skipRefresh?: boolean;
 }
 
 export const authService = {
@@ -70,8 +74,10 @@ export const authService = {
     );
     return data.data;
   },
-  async me() {
-    const { data } = await httpClient.get<ApiResponse<User>>(apiEndpoints.auth.me);
+  async me(options?: MeOptions) {
+    const { data } = await httpClient.get<ApiResponse<User>>(apiEndpoints.auth.me, {
+      headers: options?.skipRefresh ? { [SKIP_AUTH_REFRESH_HEADER]: "true" } : undefined,
+    });
     return data.data;
   },
   async logout() {

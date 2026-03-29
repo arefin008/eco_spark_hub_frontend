@@ -47,7 +47,7 @@ export function SiteHeader() {
   const router = useRouter();
   const pathname = usePathname();
   const queryClient = useQueryClient();
-  const { data: currentUser } = useCurrentUser();
+  const { data: currentUser } = useCurrentUser({ skipRefresh: true });
   const [open, setOpen] = useState(false);
   const navigationLinks = publicNavLinks.filter((item) =>
     currentUser ? item.href !== "/dashboard" : true,

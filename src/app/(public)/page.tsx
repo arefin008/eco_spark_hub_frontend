@@ -120,11 +120,18 @@ export default async function HomePage() {
           title="Top-voted sustainability proposals from the community"
           description="Rendered on the server so the public feed stays indexable and loads with content."
         />
-        <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-          {featuredIdeas.map((idea) => (
-            <IdeaCard key={idea.id} idea={idea} />
-          ))}
-        </div>
+        {featuredIdeas.length > 0 ? (
+          <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+            {featuredIdeas.map((idea) => (
+              <IdeaCard key={idea.id} idea={idea} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-[24px] border border-dashed border-border/80 bg-card/80 p-6 text-sm text-muted-foreground sm:p-8">
+            Featured ideas are temporarily unavailable. The page still renders, and the list
+            will populate once the API is reachable.
+          </div>
+        )}
       </PageShell>
 
       <section className="border-y border-border bg-secondary/30">
