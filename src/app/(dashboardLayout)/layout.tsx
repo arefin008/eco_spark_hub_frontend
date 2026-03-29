@@ -21,6 +21,7 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { authService } from "@/services/auth.service";
 import { cn } from "@/lib/utils";
 import { adminDashboardLinks, memberDashboardLinks } from "@/lib/routes";
+import type { UserRole } from "@/types/domain";
 
 export default function DashboardLayout({
   children,
@@ -33,6 +34,11 @@ export default function DashboardLayout({
   const { data: currentUser } = useCurrentUser();
   const links =
     currentUser?.role === "ADMIN" ? adminDashboardLinks : memberDashboardLinks;
+  const allowedRoles: UserRole[] | undefined = pathname.startsWith("/dashboard/admin")
+    ? ["ADMIN"]
+    : pathname.startsWith("/dashboard/member")
+      ? ["MEMBER"]
+      : undefined;
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const logoutMutation = useMutation({
@@ -47,7 +53,7 @@ export default function DashboardLayout({
   const isProfileActive = pathname === "/my-profile";
 
   return (
-    <AuthGuard>
+    <AuthGuard allowedRoles={allowedRoles}>
       <div
         className={cn(
           "grid min-h-screen",
