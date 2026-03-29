@@ -1,5 +1,5 @@
 const clientApiBaseUrl = "/api/v1";
-const clientGoogleAuthUrl = "/api/auth/sign-in/social";
+const clientGoogleAuthUrl = "/api/v1/auth/google";
 
 function stripTrailingSlash(value: string) {
   return value.endsWith("/") ? value.slice(0, -1) : value;
@@ -23,5 +23,5 @@ export const appConfig = {
   apiBaseUrl,
   apiOrigin: apiBaseUrl ? getApiOrigin(apiBaseUrl) : undefined,
   appUrl,
-  googleAuthUrl: clientGoogleAuthUrl,
+  googleAuthUrl: process.env.NEXT_PUBLIC_GOOGLE_AUTH_URL ?? clientGoogleAuthUrl,
 };
