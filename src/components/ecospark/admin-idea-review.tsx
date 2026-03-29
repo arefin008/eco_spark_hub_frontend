@@ -6,7 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { formatDate, ideaHasAccess } from "@/lib/helpers";
+import { formatDate } from "@/lib/helpers";
 import { ideaService } from "@/services/idea.service";
 
 export function AdminIdeaReview() {
@@ -72,18 +72,31 @@ export function AdminIdeaReview() {
         </form>
       </div>
 
-      {targetIdeaQuery.data && ideaHasAccess(targetIdeaQuery.data) ? (
+      {targetIdeaQuery.data ? (
         <div className="rounded-[24px] border border-border/80 bg-card p-5 sm:rounded-[28px] sm:p-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
-            {targetIdeaQuery.data.status.replaceAll("_", " ")}
-          </p>
+          {"status" in targetIdeaQuery.data ? (
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+              {targetIdeaQuery.data.status.replaceAll("_", " ")}
+            </p>
+          ) : (
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-600">
+              Limited idea payload returned
+            </p>
+          )}
           <h2 className="mt-2 text-3xl font-semibold">{targetIdeaQuery.data.title}</h2>
           <p className="mt-2 text-sm text-muted-foreground">
             Submitted {formatDate(targetIdeaQuery.data.createdAt)}
           </p>
-          <p className="mt-4 text-sm leading-7 text-muted-foreground">
-            {targetIdeaQuery.data.description}
-          </p>
+          {"description" in targetIdeaQuery.data ? (
+            <p className="mt-4 text-sm leading-7 text-muted-foreground">
+              {targetIdeaQuery.data.description}
+            </p>
+          ) : (
+            <p className="mt-4 text-sm leading-7 text-muted-foreground">
+              The detail endpoint returned a restricted payload for this idea, but review actions
+              can still be submitted by ID from this panel.
+            </p>
+          )}
 
           <textarea
             value={rejectionReason}
