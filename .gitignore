@@ -40,6 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-ALL_ROUTES.md
-1.EcoSpark-Hub.md
+
 
