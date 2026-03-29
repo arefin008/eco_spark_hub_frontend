@@ -12,7 +12,6 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { appConfig } from "@/lib/app-config";
 import {
   authService,
   type LoginInput,
@@ -99,7 +98,6 @@ export function AuthCard({ mode }: { mode: "login" | "register" }) {
     requestedNextPath && requestedNextPath.startsWith("/") && !requestedNextPath.startsWith("//")
       ? requestedNextPath
       : "/dashboard";
-  const googleCallbackUrl = new URL(nextPath, appConfig.appUrl).toString();
   const [loginErrors, setLoginErrors] = useState<Partial<Record<keyof LoginValues, string>>>({});
   const [registerErrors, setRegisterErrors] = useState<
     Partial<Record<keyof RegisterValues, string>>
@@ -185,6 +183,7 @@ export function AuthCard({ mode }: { mode: "login" | "register" }) {
   async function handleGoogleSignIn() {
     try {
       setIsGoogleLoading(true);
+      const googleCallbackUrl = new URL(nextPath, window.location.origin).toString();
       const result = await authService.signInWithGoogle(googleCallbackUrl);
       window.location.assign(result.url);
     } catch (error) {

@@ -4,6 +4,10 @@ import type { ApiResponse } from "@/types/api";
 import type { Idea } from "@/types/domain";
 
 export async function getFeaturedIdeas() {
+  if (!appConfig.apiBaseUrl) {
+    return [];
+  }
+
   const query = buildQueryString({
     limit: 6,
     sortBy: "TOP_VOTED",
