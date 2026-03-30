@@ -8,7 +8,12 @@ export function PageShell({
   className?: string;
 }) {
   return (
-    <main className={cn("mx-auto w-full max-w-7xl px-4 py-10 sm:px-5 md:px-8 lg:px-10", className)}>
+    <main
+      className={cn(
+        "mx-auto w-full max-w-7xl px-4 py-8 sm:px-5 sm:py-10 md:px-8 lg:px-10",
+        className,
+      )}
+    >
       {children}
     </main>
   );

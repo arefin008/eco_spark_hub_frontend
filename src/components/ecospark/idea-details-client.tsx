@@ -44,7 +44,11 @@ export function IdeaDetailsClient({ ideaId }: { ideaId: string }) {
   const purchaseMutation = useMutation({
     mutationFn: () => purchaseService.create(ideaId),
     onSuccess: (data) => {
-      window.location.href = data.payment.checkoutUrl;
+      const link = document.createElement("a");
+      link.href = data.payment.checkoutUrl;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.click();
     },
     onError: (error) => toast.error(error.message),
   });
@@ -64,7 +68,7 @@ export function IdeaDetailsClient({ ideaId }: { ideaId: string }) {
 
   return (
     <div className="space-y-8">
-      <section className="rounded-[36px] border border-border/80 bg-card p-8 shadow-sm">
+      <section className="rounded-[28px] border border-border/80 bg-card p-5 shadow-sm sm:rounded-[36px] sm:p-8">
         <div className="flex flex-wrap items-center gap-2 text-xs">
           <span className="rounded-full bg-secondary px-3 py-1 font-medium">
             {idea.category.name}
@@ -81,10 +85,10 @@ export function IdeaDetailsClient({ ideaId }: { ideaId: string }) {
           )}
         </div>
 
-        <h1 className="mt-5 text-4xl font-semibold tracking-tight md:text-5xl">
+        <h1 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
           {idea.title}
         </h1>
-        <div className="mt-5 flex flex-wrap gap-5 text-sm text-muted-foreground">
+        <div className="mt-5 flex flex-col gap-2 text-sm text-muted-foreground sm:flex-row sm:flex-wrap sm:gap-5">
           <span>By {idea.author.name}</span>
           <span>Published {formatDate(idea.createdAt)}</span>
           {"status" in idea ? <span>Status: {idea.status}</span> : null}
@@ -165,12 +169,12 @@ export function IdeaDetailsClient({ ideaId }: { ideaId: string }) {
             ) : null}
           </>
         ) : (
-          <div className="mt-8 rounded-[32px] border border-accent/35 bg-accent/12 p-8 text-foreground">
-            <div className="flex items-start gap-4">
-              <Lock className="mt-1 size-6" />
+          <div className="mt-8 rounded-[24px] border border-accent/35 bg-accent/12 p-5 text-foreground sm:rounded-[32px] sm:p-8">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+              <Lock className="size-6 shrink-0 sm:mt-1" />
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-2xl font-semibold">
+                  <h2 className="text-xl font-semibold sm:text-2xl">
                     {isUnavailableIdea
                       ? "Idea unavailable"
                       : "Premium idea access required"}
@@ -181,18 +185,28 @@ export function IdeaDetailsClient({ ideaId }: { ideaId: string }) {
                       : `${idea.lockReason}. Complete checkout to unlock the full proposal.`}
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                   {needsPurchaseForIdea && currentUser ? (
-                    <Button onClick={() => purchaseMutation.mutate()} disabled={purchaseMutation.isPending}>
+                    <Button
+                      onClick={() => purchaseMutation.mutate()}
+                      disabled={purchaseMutation.isPending}
+                      className="w-full sm:w-auto"
+                    >
                       {purchaseMutation.isPending ? "Redirecting..." : "Purchase with Stripe"}
                     </Button>
                   ) : null}
                   {needsLoginForIdea ? (
-                    <Link href="/login" className={cn(buttonVariants({ variant: "default" }))}>
+                    <Link
+                      href="/login"
+                      className={cn(buttonVariants({ variant: "default" }), "w-full sm:w-auto")}
+                    >
                       Login to Purchase
                     </Link>
                   ) : null}
-                  <Link href="/ideas" className={cn(buttonVariants({ variant: "outline" }))}>
+                  <Link
+                    href="/ideas"
+                    className={cn(buttonVariants({ variant: "outline" }), "w-full sm:w-auto")}
+                  >
                     Browse other ideas
                   </Link>
                 </div>

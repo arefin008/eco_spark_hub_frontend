@@ -79,8 +79,8 @@ export function IdeaBrowser() {
   const maxPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return (
-    <div className="mt-10 grid gap-6 xl:grid-cols-[320px_1fr]">
-      <aside className="h-fit rounded-[28px] border border-border/80 bg-card p-6 shadow-sm">
+    <div className="mt-8 grid gap-6 xl:mt-10 xl:grid-cols-[320px_1fr]">
+      <aside className="h-fit rounded-[24px] border border-border/80 bg-card p-5 shadow-sm sm:rounded-[28px] sm:p-6">
         <h2 className="text-xl font-semibold">Search and Filter</h2>
 
         <div className="mt-6 space-y-4">
@@ -158,7 +158,7 @@ export function IdeaBrowser() {
       </aside>
 
       <section className="space-y-5">
-        <div className="flex flex-wrap items-center justify-between gap-4 rounded-[28px] border border-border/80 bg-card px-6 py-4">
+        <div className="flex flex-col gap-2 rounded-[24px] border border-border/80 bg-card px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:rounded-[28px] sm:px-6">
           <p className="text-sm text-muted-foreground">
             {ideasQuery.isLoading
               ? "Loading ideas..."
@@ -174,16 +174,17 @@ export function IdeaBrowser() {
         </div>
 
         {!ideasQuery.isLoading && !filteredIdeas.length ? (
-          <div className="rounded-[28px] border border-dashed border-border px-6 py-12 text-center text-muted-foreground">
+          <div className="rounded-[24px] border border-dashed border-border px-5 py-10 text-center text-muted-foreground sm:rounded-[28px] sm:px-6 sm:py-12">
             No approved ideas matched your filters.
           </div>
         ) : null}
 
-        <div className="flex items-center justify-between gap-4 rounded-[28px] border border-border/80 bg-card px-6 py-4">
+        <div className="flex flex-col gap-3 rounded-[24px] border border-border/80 bg-card px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:rounded-[28px] sm:px-6">
           <Button
             variant="outline"
             disabled={page <= 1}
             onClick={() => setPage((value) => value - 1)}
+            className="w-full sm:w-auto"
           >
             Previous
           </Button>
@@ -191,6 +192,7 @@ export function IdeaBrowser() {
             variant="outline"
             disabled={page >= maxPages}
             onClick={() => setPage((value) => value + 1)}
+            className="w-full sm:w-auto"
           >
             Next
           </Button>

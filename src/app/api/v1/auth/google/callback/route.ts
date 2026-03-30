@@ -41,7 +41,7 @@ export async function GET(request: Request) {
   const nextResponse = NextResponse.redirect(redirectUrl, getRedirectStatus(response.status));
 
   nextResponse.headers.set("Cache-Control", "no-store");
-  applyBackendCookies(nextResponse, response.headers);
+  applyBackendCookies(nextResponse, response.headers, request.url);
 
   return nextResponse;
 }

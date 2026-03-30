@@ -63,12 +63,12 @@ export function DashboardOverview() {
   });
 
   if (isLoading) {
-    return <div className="px-4 py-8 text-muted-foreground sm:px-6 lg:px-10">Loading dashboard...</div>;
+    return <div className="px-4 py-6 text-muted-foreground sm:px-6 sm:py-8 lg:px-10">Loading dashboard...</div>;
   }
 
   if (!currentUser) {
     return (
-      <div className="px-4 py-8 sm:px-6 lg:px-10">
+      <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
         <div className="rounded-[28px] border border-border bg-card p-8">
           <h1 className="text-3xl font-semibold">Dashboard access</h1>
           <p className="mt-3 text-muted-foreground">
@@ -89,7 +89,7 @@ export function DashboardOverview() {
     ];
 
     return (
-      <div className="space-y-6 px-4 py-8 sm:px-6 lg:px-10">
+      <div className="space-y-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
         <div className="space-y-3">
           <p className="text-xs font-semibold uppercase tracking-[0.32em] text-primary">
             Admin overview
@@ -133,7 +133,7 @@ export function DashboardOverview() {
   const reviewCount = myIdeas.filter((idea) => idea.status === "UNDER_REVIEW").length;
 
   return (
-    <div className="space-y-6 px-4 py-8 sm:px-6 lg:px-10">
+    <div className="space-y-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
       <div className="space-y-3">
         <p className="text-xs font-semibold uppercase tracking-[0.32em] text-primary">
           Member overview

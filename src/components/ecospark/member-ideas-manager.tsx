@@ -137,8 +137,8 @@ export function MemberIdeasManager() {
   }
 
   return (
-    <div className="space-y-6 px-4 py-8 sm:px-6 lg:px-10">
-      <div className="grid gap-8 xl:grid-cols-[1.05fr_0.95fr]">
+    <div className="space-y-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
+      <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr] xl:gap-8">
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl tracking-tight sm:text-3xl">
@@ -312,19 +312,30 @@ export function MemberIdeasManager() {
 
               <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 {idea.status !== "APPROVED" ? (
-                  <Button variant="outline" onClick={() => hydrateIdeaForm(idea)}>
+                  <Button
+                    variant="outline"
+                    onClick={() => hydrateIdeaForm(idea)}
+                    className="w-full sm:w-auto"
+                  >
                     <Pencil className="size-4" />
                     Edit
                   </Button>
                 ) : null}
                 {idea.status === "DRAFT" || idea.status === "REJECTED" ? (
-                  <Button onClick={() => submitMutation.mutate(idea.id)}>
+                  <Button
+                    onClick={() => submitMutation.mutate(idea.id)}
+                    className="w-full sm:w-auto"
+                  >
                     <Send className="size-4" />
                     Submit for Review
                   </Button>
                 ) : null}
                 {idea.status !== "APPROVED" ? (
-                  <Button variant="ghost" onClick={() => deleteMutation.mutate(idea.id)}>
+                  <Button
+                    variant="ghost"
+                    onClick={() => deleteMutation.mutate(idea.id)}
+                    className="w-full sm:w-auto"
+                  >
                     <Trash2 className="size-4" />
                     Delete
                   </Button>

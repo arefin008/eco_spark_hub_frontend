@@ -35,7 +35,7 @@ async function proxyAuthRequest(
     headers: contentType ? { "content-type": contentType } : undefined,
   });
 
-  applyBackendCookies(nextResponse, response.headers);
+  applyBackendCookies(nextResponse, response.headers, request.url);
 
   return nextResponse;
 }

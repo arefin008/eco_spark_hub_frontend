@@ -40,7 +40,7 @@ const socialLinks = [
 export function SiteFooter() {
   return (
     <footer className="border-t border-border/80 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--secondary)_48%,transparent),var(--background))]">
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-5 md:px-8 lg:px-10">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-5 sm:py-10 md:px-8 lg:px-10">
         <div className="grid gap-6 rounded-[28px] border border-border/80 bg-card/92 p-5 text-sm sm:gap-8 sm:rounded-[32px] sm:p-8 lg:grid-cols-[1.25fr_0.75fr_0.75fr_0.95fr]">
           <div className="space-y-5">
             <div className="flex items-center gap-3">
@@ -156,7 +156,7 @@ export function SiteFooter() {
           <p className="leading-7 text-muted-foreground">
             © 2026 EcoSpark Hub. All rights reserved.
           </p>
-          <div className="flex flex-wrap gap-x-5 gap-y-2">
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-5 sm:gap-y-2">
             {footerLegalLinks.map((item) => (
               <Link key={item.href} href={item.href} className="transition hover:text-foreground">
                 {item.label}

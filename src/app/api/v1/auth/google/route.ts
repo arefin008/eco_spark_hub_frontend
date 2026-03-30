@@ -26,7 +26,7 @@ async function proxyGoogleAuth(request: Request) {
       status: response.status >= 300 && response.status < 400 ? response.status : 302,
     });
 
-    applyBackendCookies(nextResponse, response.headers);
+    applyBackendCookies(nextResponse, response.headers, request.url);
     return nextResponse;
   }
 
@@ -35,7 +35,7 @@ async function proxyGoogleAuth(request: Request) {
     ? NextResponse.json(await response.json(), { status: response.status })
     : new NextResponse(await response.text(), { status: response.status });
 
-  applyBackendCookies(nextResponse, response.headers);
+  applyBackendCookies(nextResponse, response.headers, request.url);
 
   return nextResponse;
 }

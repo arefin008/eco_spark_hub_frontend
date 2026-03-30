@@ -196,7 +196,7 @@ export function AuthCard({ mode }: { mode: "login" | "register" }) {
 
   return (
     <Card className="w-full max-w-md border-border/70 bg-card/95 shadow-[0_24px_60px_rgba(15,23,42,0.08)]">
-      <CardHeader className="space-y-3 p-8">
+      <CardHeader className="space-y-3 p-5 sm:p-8">
         <p className="text-xs font-semibold uppercase tracking-[0.32em] text-primary">
           {mode === "register" ? "Register" : "Login"}
         </p>
@@ -210,7 +210,7 @@ export function AuthCard({ mode }: { mode: "login" | "register" }) {
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="space-y-6 px-8 pb-8 pt-0">
+      <CardContent className="space-y-6 px-5 pb-5 pt-0 sm:px-8 sm:pb-8">
         <Button
           type="button"
           variant="outline"
