@@ -32,15 +32,41 @@ export interface ResetPasswordInput {
   newPassword: string;
 }
 
-interface SocialSignInResponse {
-  url: string;
-}
-
 interface MeOptions {
   skipRefresh?: boolean;
 }
 
 type CurrentUser = User | null;
+
+function getGoogleRedirectTarget(callbackUrl?: string) {
+  const baseUrl =
+    typeof window !== "undefined" && window.location.origin
+      ? window.location.origin
+      : appConfig.appUrl;
+
+  if (!baseUrl) {
+    throw new Error("Google sign-in callback URL is not configured.");
+  }
+
+  if (!callbackUrl) {
+    return baseUrl;
+  }
+
+  return new URL(callbackUrl, baseUrl).toString();
+}
+
+function getGoogleSignInStartUrl(callbackUrl?: string) {
+  const redirectUrl = new URL(
+    appConfig.googleAuthUrl,
+    typeof window !== "undefined" && window.location.origin
+      ? window.location.origin
+      : appConfig.appUrl,
+  );
+
+  redirectUrl.searchParams.set("callbackUrl", getGoogleRedirectTarget(callbackUrl));
+
+  return redirectUrl.toString();
+}
 
 export const authService = {
   async signInWithGoogle(callbackUrl?: string) {
@@ -48,50 +74,9 @@ export const authService = {
       throw new Error("Google sign-in is not configured.");
     }
 
-    const callbackBaseUrl =
-      typeof window !== "undefined" && window.location.origin
-        ? window.location.origin
-        : appConfig.appUrl;
-
-    if (!callbackBaseUrl) {
-      throw new Error("Google sign-in callback URL is not configured.");
-    }
-
-    const callbackHandlerUrl = new URL("/api/v1/auth/google/callback", callbackBaseUrl);
-
-    if (callbackUrl) {
-      callbackHandlerUrl.searchParams.set("redirectTo", callbackUrl);
-    }
-
-    const response = await fetch(appConfig.googleAuthUrl, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        provider: "google",
-        callbackURL: callbackHandlerUrl.toString(),
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Google sign-in could not be started.");
-    }
-
-    const payload = (await response.json()) as
-      | SocialSignInResponse
-      | ApiResponse<SocialSignInResponse>;
-
-    if ("url" in payload && typeof payload.url === "string") {
-      return payload;
-    }
-
-    if ("data" in payload && payload.data?.url) {
-      return payload.data;
-    }
-
-    throw new Error("Google sign-in URL was not returned.");
+    return {
+      url: getGoogleSignInStartUrl(callbackUrl),
+    };
   },
   async register(payload: RegisterInput) {
     const { data } = await authHttpClient.post<ApiResponse<AuthPayload>>(

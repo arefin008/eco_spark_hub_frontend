@@ -58,6 +58,9 @@ export function IdeaDetailsClient({ ideaId }: { ideaId: string }) {
   }
 
   const idea = ideaQuery.data;
+  const isUnavailableIdea = !ideaHasAccess(idea) && idea.accessState === "UNAVAILABLE";
+  const needsLoginForIdea = !ideaHasAccess(idea) && idea.accessState === "LOGIN_REQUIRED";
+  const needsPurchaseForIdea = !ideaHasAccess(idea) && idea.accessState === "PURCHASE_REQUIRED";
 
   return (
     <div className="space-y-8">
@@ -167,21 +170,28 @@ export function IdeaDetailsClient({ ideaId }: { ideaId: string }) {
               <Lock className="mt-1 size-6" />
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-2xl font-semibold">Premium idea access required</h2>
+                  <h2 className="text-2xl font-semibold">
+                    {isUnavailableIdea
+                      ? "Idea unavailable"
+                      : "Premium idea access required"}
+                  </h2>
                   <p className="mt-2 text-sm leading-7">
-                    {idea.lockReason}. Complete checkout to unlock the full proposal.
+                    {isUnavailableIdea
+                      ? `${idea.lockReason}.`
+                      : `${idea.lockReason}. Complete checkout to unlock the full proposal.`}
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-3">
-                  {currentUser ? (
+                  {needsPurchaseForIdea && currentUser ? (
                     <Button onClick={() => purchaseMutation.mutate()} disabled={purchaseMutation.isPending}>
                       {purchaseMutation.isPending ? "Redirecting..." : "Purchase with Stripe"}
                     </Button>
-                  ) : (
+                  ) : null}
+                  {needsLoginForIdea ? (
                     <Link href="/login" className={cn(buttonVariants({ variant: "default" }))}>
                       Login to Purchase
                     </Link>
-                  )}
+                  ) : null}
                   <Link href="/ideas" className={cn(buttonVariants({ variant: "outline" }))}>
                     Browse other ideas
                   </Link>

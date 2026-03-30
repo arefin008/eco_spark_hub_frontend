@@ -1,18 +1,5 @@
 import { NextResponse } from "next/server";
-
-function stripTrailingSlash(value: string) {
-  return value.endsWith("/") ? value.slice(0, -1) : value;
-}
-
-function getApiBaseUrl() {
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-  if (!apiBaseUrl) {
-    throw new Error("NEXT_PUBLIC_API_BASE_URL is not configured.");
-  }
-
-  return stripTrailingSlash(apiBaseUrl);
-}
+import { getApiBaseUrl } from "../auth-proxy";
 
 export async function GET(request: Request) {
   const response = await fetch(`${getApiBaseUrl()}/auth/me`, {

@@ -64,13 +64,14 @@ export interface Idea {
 export interface LockedIdea {
   id: string;
   title: string;
-  isPaid: true;
+  isPaid: boolean;
   price?: number | string | null;
   category: Category;
   author: IdeaAuthor;
   createdAt: string;
   canAccess: false;
   lockReason: string;
+  accessState: "LOGIN_REQUIRED" | "PURCHASE_REQUIRED" | "UNAVAILABLE";
 }
 
 export type IdeaDetail = Idea | LockedIdea;
@@ -106,6 +107,7 @@ export interface Purchase {
     title: string;
     isPaid: boolean;
     price?: number | string | null;
+    status?: IdeaStatus;
   };
 }
 

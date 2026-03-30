@@ -32,9 +32,18 @@ export function PurchasesPanel() {
               </p>
             </div>
             <div className="flex flex-col gap-2 sm:items-end">
-              <Link href={`/ideas/${purchase.idea.id}`} className="text-sm font-semibold text-primary">
-                Open idea
-              </Link>
+              {purchase.status === "PAID" ? (
+                <Link
+                  href={`/ideas/${purchase.idea.id}`}
+                  className="text-sm font-semibold text-primary"
+                >
+                  Open idea
+                </Link>
+              ) : (
+                <span className="text-sm font-medium text-muted-foreground">
+                  Available after payment confirmation
+                </span>
+              )}
               <Link
                 href={`/dashboard/member/purchases/${purchase.id}`}
                 className="text-sm font-semibold text-primary"
