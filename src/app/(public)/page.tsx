@@ -73,12 +73,12 @@ export default async function HomePage() {
                 EcoSpark Hub gives members a focused place to publish ideas, gather support,
                 and unlock implementation guidance without cluttering the experience.
               </p>
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <div className="flex flex-row gap-3 sm:flex-row sm:flex-wrap">
                 <Link
                   href="/ideas"
                   className={cn(
                     buttonVariants({ variant: "default", size: "lg" }),
-                    "rounded-full px-5",
+                    "min-w-0 flex-1 rounded-full px-4 text-center sm:flex-none sm:px-5",
                   )}
                 >
                   Explore Ideas
@@ -87,7 +87,7 @@ export default async function HomePage() {
                   href="/register"
                   className={cn(
                     buttonVariants({ variant: "outline", size: "lg" }),
-                    "rounded-full px-5",
+                    "min-w-0 flex-1 rounded-full px-4 text-center sm:flex-none sm:px-5",
                   )}
                 >
                   Become a Member

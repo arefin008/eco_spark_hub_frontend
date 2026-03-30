@@ -41,8 +41,8 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-border/80 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--secondary)_48%,transparent),var(--background))]">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-5 sm:py-10 md:px-8 lg:px-10">
-        <div className="grid gap-6 rounded-[28px] border border-border/80 bg-card/92 p-5 text-sm sm:gap-8 sm:rounded-[32px] sm:p-8 lg:grid-cols-[1.25fr_0.75fr_0.75fr_0.95fr]">
-          <div className="space-y-5">
+        <div className="rounded-[28px] border border-border/80 bg-card/92 p-5 text-sm sm:rounded-[32px] sm:p-8">
+          <div className="space-y-5 border-b border-border/70 pb-6 sm:pb-8">
             <div className="flex items-center gap-3">
               <BrandMark className="size-10" />
               <div>
@@ -92,34 +92,46 @@ export function SiteFooter() {
             </div>
           </div>
 
-          <div>
-            <p className="font-semibold text-foreground">Platform</p>
-            <div className="mt-4 flex flex-col gap-3 text-muted-foreground">
-              {platformLinks.map((item) => (
-                <Link key={item.href} href={item.href} className="transition hover:text-foreground">
-                  {item.label}
-                </Link>
-              ))}
+          <div className="grid grid-cols-2 gap-6 pt-6 sm:gap-8 sm:pt-8 lg:grid-cols-4">
+            <div>
+              <p className="font-semibold text-foreground">Platform</p>
+              <div className="mt-4 flex flex-col gap-3 text-muted-foreground">
+                {platformLinks.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="transition hover:text-foreground"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <p className="font-semibold text-foreground">Members</p>
-            <div className="mt-4 flex flex-col gap-3 text-muted-foreground">
-              {memberLinks.map((item) => (
-                <Link key={item.href} href={item.href} className="transition hover:text-foreground">
-                  {item.label}
-                </Link>
-              ))}
+            <div>
+              <p className="font-semibold text-foreground">Members</p>
+              <div className="mt-4 flex flex-col gap-3 text-muted-foreground">
+                {memberLinks.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="transition hover:text-foreground"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div className="space-y-6">
             <div>
               <p className="font-semibold text-foreground">Resources</p>
               <div className="mt-4 flex flex-col gap-3 text-muted-foreground">
                 {resourceLinks.map((item) => (
-                  <Link key={item.href} href={item.href} className="transition hover:text-foreground">
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="transition hover:text-foreground"
+                  >
                     {item.label}
                   </Link>
                 ))}
@@ -131,7 +143,7 @@ export function SiteFooter() {
               <div className="mt-4 space-y-3 text-muted-foreground">
                 <a
                   href="mailto:arefinrounok@gmail.com"
-                  className="flex items-start gap-3 transition hover:text-foreground"
+                  className="flex items-start gap-3 break-all transition hover:text-foreground"
                 >
                   <Mail className="mt-0.5 size-4 shrink-0" />
                   <span>arefinrounok@gmail.com</span>
@@ -156,7 +168,7 @@ export function SiteFooter() {
           <p className="leading-7 text-muted-foreground">
             © 2026 EcoSpark Hub. All rights reserved.
           </p>
-          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-5 sm:gap-y-2">
+          <div className="flex flex-row flex-wrap gap-x-5 gap-y-2">
             {footerLegalLinks.map((item) => (
               <Link key={item.href} href={item.href} className="transition hover:text-foreground">
                 {item.label}

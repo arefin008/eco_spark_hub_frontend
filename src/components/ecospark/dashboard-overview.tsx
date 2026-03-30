@@ -99,7 +99,7 @@ export function DashboardOverview() {
           </h1>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
           {adminStatCards.map((item) => (
             <div key={item.label} className="rounded-[24px] border border-border/80 bg-card p-5 sm:rounded-[28px] sm:p-6">
               <item.icon className="size-5 text-primary" />
@@ -141,17 +141,23 @@ export function DashboardOverview() {
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Track your ideas and premium access
         </h1>
-        <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap">
+        <div className="flex flex-row gap-3 pt-2 sm:flex-row sm:flex-wrap">
           <Link
             href="/dashboard/member/ideas/new"
-            className={cn(buttonVariants({ variant: "default", size: "lg" }), "rounded-2xl px-4")}
+            className={cn(
+              buttonVariants({ variant: "default", size: "lg" }),
+              "min-w-0 flex-1 rounded-2xl px-3 text-center sm:flex-none sm:px-4",
+            )}
           >
             <SquarePen className="size-4" />
             Create Idea
           </Link>
           <Link
             href="/dashboard/member/ideas"
-            className={cn(buttonVariants({ variant: "outline", size: "lg" }), "rounded-2xl px-4")}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "min-w-0 flex-1 rounded-2xl px-3 text-center sm:flex-none sm:px-4",
+            )}
           >
             Manage Ideas
             <ArrowRight className="size-4" />
@@ -159,7 +165,7 @@ export function DashboardOverview() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
         {[myIdeas.length, approvedCount, reviewCount, myPurchases.length].map((value, index) => {
           const item = memberStatCards[index];
 
