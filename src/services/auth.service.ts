@@ -3,7 +3,7 @@ import { apiEndpoints } from "@/lib/api-endpoints";
 import type { ApiResponse } from "@/types/api";
 import type { AuthPayload, User } from "@/types/domain";
 
-import { httpClient, SKIP_AUTH_REFRESH_HEADER } from "./http-client";
+import { ApiRequestError, authHttpClient, SKIP_AUTH_REFRESH_HEADER } from "./http-client";
 
 export interface RegisterInput {
   name: string;
@@ -34,23 +34,44 @@ export interface ResetPasswordInput {
 
 interface SocialSignInResponse {
   url: string;
-  redirect: boolean;
 }
 
 interface MeOptions {
   skipRefresh?: boolean;
 }
 
+type CurrentUser = User | null;
+
 export const authService = {
   async signInWithGoogle(callbackUrl?: string) {
+    if (!appConfig.googleAuthUrl) {
+      throw new Error("Google sign-in is not configured.");
+    }
+
+    const callbackBaseUrl =
+      typeof window !== "undefined" && window.location.origin
+        ? window.location.origin
+        : appConfig.appUrl;
+
+    if (!callbackBaseUrl) {
+      throw new Error("Google sign-in callback URL is not configured.");
+    }
+
+    const callbackHandlerUrl = new URL("/api/v1/auth/google/callback", callbackBaseUrl);
+
+    if (callbackUrl) {
+      callbackHandlerUrl.searchParams.set("redirectTo", callbackUrl);
+    }
+
     const response = await fetch(appConfig.googleAuthUrl, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         provider: "google",
-        callbackURL: callbackUrl,
+        callbackURL: callbackHandlerUrl.toString(),
       }),
     });
 
@@ -58,45 +79,65 @@ export const authService = {
       throw new Error("Google sign-in could not be started.");
     }
 
-    return (await response.json()) as SocialSignInResponse;
+    const payload = (await response.json()) as
+      | SocialSignInResponse
+      | ApiResponse<SocialSignInResponse>;
+
+    if ("url" in payload && typeof payload.url === "string") {
+      return payload;
+    }
+
+    if ("data" in payload && payload.data?.url) {
+      return payload.data;
+    }
+
+    throw new Error("Google sign-in URL was not returned.");
   },
   async register(payload: RegisterInput) {
-    const { data } = await httpClient.post<ApiResponse<AuthPayload>>(
+    const { data } = await authHttpClient.post<ApiResponse<AuthPayload>>(
       apiEndpoints.auth.register,
       payload,
     );
     return data.data;
   },
   async login(payload: LoginInput) {
-    const { data } = await httpClient.post<ApiResponse<AuthPayload>>(
+    const { data } = await authHttpClient.post<ApiResponse<AuthPayload>>(
       apiEndpoints.auth.login,
       payload,
     );
     return data.data;
   },
-  async me(options?: MeOptions) {
-    const { data } = await httpClient.get<ApiResponse<User>>(apiEndpoints.auth.me, {
-      headers: options?.skipRefresh ? { [SKIP_AUTH_REFRESH_HEADER]: "true" } : undefined,
-    });
-    return data.data;
+  async me(options?: MeOptions): Promise<CurrentUser> {
+    try {
+      const { data } = await authHttpClient.get<ApiResponse<User>>(apiEndpoints.auth.me, {
+        headers: options?.skipRefresh ? { [SKIP_AUTH_REFRESH_HEADER]: "true" } : undefined,
+      });
+      return data.data;
+    } catch (error) {
+      if (error instanceof ApiRequestError && error.status === 401) {
+        return null;
+      }
+
+      throw error;
+    }
   },
   async logout() {
-    await httpClient.post(apiEndpoints.auth.logout);
+    await authHttpClient.post(apiEndpoints.auth.logout);
   },
   async changePassword(payload: ChangePasswordInput) {
-    const { data } = await httpClient.post<ApiResponse<{ accessToken: string }>>(
+    const { data } = await authHttpClient.post<ApiResponse<{ accessToken: string }>>(
       apiEndpoints.auth.changePassword,
       payload,
     );
     return data.data;
   },
   async verifyEmail(payload: VerifyEmailInput) {
-    await httpClient.post(apiEndpoints.auth.verifyEmail, payload);
+    await authHttpClient.post(apiEndpoints.auth.verifyEmail, payload);
   },
   async forgotPassword(email: string) {
-    await httpClient.post(apiEndpoints.auth.forgotPassword, { email });
+    await authHttpClient.post(apiEndpoints.auth.forgotPassword, { email });
   },
   async resetPassword(payload: ResetPasswordInput) {
-    await httpClient.post(apiEndpoints.auth.resetPassword, payload);
+    await authHttpClient.post(apiEndpoints.auth.resetPassword, payload);
   },
 };

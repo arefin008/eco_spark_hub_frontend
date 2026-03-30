@@ -205,7 +205,7 @@ function CommentItem({
   depth = 0,
 }: {
   comment: CommentNode;
-  currentUser?: User;
+  currentUser?: User | null;
   ideaId: string;
   onCreateReply: (payload: { ideaId: string; content: string; parentId?: string }) => void;
   onDelete: (commentId: string) => void;

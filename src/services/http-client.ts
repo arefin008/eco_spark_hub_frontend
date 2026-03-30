@@ -6,15 +6,31 @@ import type { ApiErrorResponse } from "@/types/api";
 
 const SKIP_AUTH_REFRESH_HEADER = "x-skip-auth-refresh";
 
+export class ApiRequestError extends Error {
+  constructor(
+    message: string,
+    public readonly status?: number,
+  ) {
+    super(message);
+    this.name = "ApiRequestError";
+  }
+}
+
 const baseURL = appConfig.clientApiBaseUrl;
+const authBaseURL = appConfig.authApiBaseUrl;
 
 const refreshClient = axios.create({
-  baseURL,
+  baseURL: authBaseURL,
   withCredentials: true,
 });
 
 export const httpClient = axios.create({
   baseURL,
+  withCredentials: true,
+});
+
+export const authHttpClient = axios.create({
+  baseURL: authBaseURL,
   withCredentials: true,
 });
 
@@ -27,7 +43,7 @@ function getApiErrorMessage(error: AxiosError<ApiErrorResponse>) {
   );
 }
 
-httpClient.interceptors.response.use(
+authHttpClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError<ApiErrorResponse>) => {
     const originalRequest = error.config as
@@ -45,13 +61,17 @@ httpClient.interceptors.response.use(
 
       try {
         await refreshClient.post(apiEndpoints.auth.refreshToken, {});
-        return httpClient(originalRequest);
+        return authHttpClient(originalRequest);
       } catch {
-        return Promise.reject(new Error(getApiErrorMessage(error)));
+        return Promise.reject(
+          new ApiRequestError(getApiErrorMessage(error), error.response?.status),
+        );
       }
     }
 
-    return Promise.reject(new Error(getApiErrorMessage(error)));
+    return Promise.reject(
+      new ApiRequestError(getApiErrorMessage(error), error.response?.status),
+    );
   },
 );
 
