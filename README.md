@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# EcoSpark Hub Frontend
 
-## Getting Started
+EcoSpark Hub Frontend is a modern sustainability community platform built with Next.js. It allows members to publish environmental ideas, explore community-driven proposals, purchase access to premium idea content, and participate in a moderated ecosystem where admins review submissions and manage platform activity.
 
-First, run the development server:
+## Live URLs
+
+- Frontend: `Add your deployed frontend URL here`
+- Backend API: `Add your deployed backend URL here`
+
+## Features
+
+- Public landing page with featured sustainability ideas and newsletter signup
+- Email/password authentication with profile and password management flows
+- Google authentication entry point
+- Browse, search, and filter approved ideas
+- Detailed idea pages with voting and community discussion support
+- Paid idea access flow with Stripe payment return handling
+- Member dashboard for creating, updating, submitting, and tracking ideas
+- Admin dashboard for reviewing ideas, managing users, categories, and newsletters
+- Responsive interface optimized for desktop and mobile usage
+
+## Technologies Used
+
+- Next.js 16
+- React 19
+- TypeScript
+- Node.js
+- Tailwind CSS 4
+- shadcn/ui styling setup
+- Base UI
+- TanStack Query
+- TanStack React Form
+- Axios
+- Zod
+- Framer Motion
+- Recharts
+- Sonner
+- next-themes
+- Lucide React
+- date-fns
+
+## Setup Instructions
+
+### 1. Clone the repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/arefin008/eco_spark_hub_frontend.git
+cd eco_spark_hub_frontend
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+If you do not use `pnpm`, install it first or adapt the commands for your package manager.
 
-## Learn More
+### 3. Configure environment variables
 
-To learn more about Next.js, take a look at the following resources:
+Create a `.env` file in the project root and use the following values as a reference:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:5000/api/v1
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_GOOGLE_AUTH_URL=http://localhost:5000/api/v1/auth/google
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 4. Start the development server
 
-## Deploy on Vercel
+```bash
+pnpm dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The application will run at `http://localhost:3000`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 5. Build for production
+
+```bash
+pnpm build
+pnpm start
+```
+
+## Available Scripts
+
+- `pnpm dev` starts the development server
+- `pnpm dev:reset` clears the Next.js build cache and restarts development
+- `pnpm build` creates the production build
+- `pnpm start` runs the production server
+- `pnpm lint` runs ESLint
+
+## Project Description
+
+This frontend powers the client-facing experience for EcoSpark Hub, a platform focused on collecting, validating, and promoting sustainability ideas. It is designed for two primary user roles:
+
+- Members who create ideas, purchase premium content, and engage with the community
+- Admins who moderate content, review submissions, and oversee platform operations
+
+The application communicates with a backend API for authentication, idea management, payments, newsletters, user administration, and category management.
