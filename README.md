@@ -4,8 +4,8 @@ EcoSpark Hub Frontend is a modern sustainability community platform built with N
 
 ## Live URLs
 
-- Frontend: `Add your deployed frontend URL here`
-- Backend API: `Add your deployed backend URL here`
+- Frontend: (https://ecospark-hub-frontend.vercel.app/)
+- Backend API: (https://ecosparkhubbackend.vercel.app/)
 
 ## Features
 
