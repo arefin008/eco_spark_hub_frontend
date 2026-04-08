@@ -18,17 +18,17 @@ function getStatusCopy(status: IdeaStatus) {
     case "UNDER_REVIEW":
       return {
         label: "Under Review",
-        tone: "text-amber-700",
+        tone: "text-[color:var(--warning-foreground)]",
       };
     case "REJECTED":
       return {
         label: "Rejected",
-        tone: "text-rose-700",
+        tone: "text-destructive",
       };
     case "APPROVED":
       return {
         label: "Approved",
-        tone: "text-emerald-700",
+        tone: "text-[color:var(--success-foreground)]",
       };
     default:
       return {
@@ -59,7 +59,7 @@ function IdeaReviewCard({
   const canReview = idea.status === "UNDER_REVIEW" || idea.status === "REJECTED";
 
   return (
-    <article className="rounded-[24px] border border-border/80 bg-card p-5 sm:rounded-[28px] sm:p-6">
+    <article className="ui-surface p-5 sm:p-6">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className={`text-xs font-semibold uppercase tracking-[0.28em] ${status.tone}`}>
@@ -85,7 +85,7 @@ function IdeaReviewCard({
       </p>
 
       {idea.rejectionReason ? (
-        <p className="mt-4 rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-900">
+        <p className="ui-status-error mt-4">
           Previous feedback: {idea.rejectionReason}
         </p>
       ) : null}
@@ -139,7 +139,7 @@ function IdeaDetailPanel({
             {status.label}
           </p>
         ) : (
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-700">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[color:var(--warning-foreground)]">
             Limited idea payload returned
           </p>
         )}
@@ -153,7 +153,7 @@ function IdeaDetailPanel({
           <div className="space-y-4">
             <p className="text-sm leading-7 text-muted-foreground">{idea.description}</p>
             <div className="grid gap-4 lg:grid-cols-2">
-              <div className="rounded-2xl border border-border/70 bg-background p-4">
+              <div className="ui-surface-subtle p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
                   Problem
                 </p>
@@ -161,7 +161,7 @@ function IdeaDetailPanel({
                   {idea.problemStatement}
                 </p>
               </div>
-              <div className="rounded-2xl border border-border/70 bg-background p-4">
+              <div className="ui-surface-subtle p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
                   Proposed solution
                 </p>
@@ -309,7 +309,7 @@ export function AdminIdeaReview() {
               setSelectedId(ideaId.trim());
             }}
           >
-            <label className="flex h-12 flex-1 items-center gap-3 rounded-2xl border border-border bg-background px-4">
+            <label className="ui-control flex h-12 flex-1 items-center gap-3">
               <Search className="size-4 text-muted-foreground" />
               <input
                 value={ideaId}
@@ -360,7 +360,7 @@ export function AdminIdeaReview() {
         </div>
 
         {reviewCountMismatch ? (
-          <div className="rounded-[24px] border border-amber-300 bg-amber-50 p-6 text-sm text-amber-900">
+          <div className="ui-status-warning p-6">
             The admin overview reports {underReviewCount} under-review idea{underReviewCount === 1 ? "" : "s"},
             but the idea list returned only {reviewableIdeas.length} reviewable item{reviewableIdeas.length === 1 ? "" : "s"}.
             This usually means the backend stats endpoint and ideas listing endpoint are not returning the same dataset.
@@ -369,7 +369,7 @@ export function AdminIdeaReview() {
         ) : null}
 
         {ideasQuery.isLoading ? (
-          <div className="rounded-[24px] border border-border/80 bg-card p-6 text-sm text-muted-foreground">
+          <div className="ui-surface p-6 text-sm text-muted-foreground">
             Loading ideas for review...
           </div>
         ) : reviewableIdeas.length ? (
@@ -391,7 +391,7 @@ export function AdminIdeaReview() {
             ))}
           </div>
         ) : (
-          <div className="rounded-[24px] border border-border/80 bg-card p-6 text-sm text-muted-foreground">
+          <div className="ui-surface p-6 text-sm text-muted-foreground">
             No reviewable ideas were returned by the list endpoint. If your backend exposes pending
             ideas only by ID, use the fetch form above and review them manually.
           </div>
@@ -411,9 +411,9 @@ export function AdminIdeaReview() {
             {approvedIdeas.map((idea) => (
               <article
                 key={idea.id}
-                className="rounded-[24px] border border-border/80 bg-card p-5 sm:rounded-[28px] sm:p-6"
+                className="ui-surface p-5 sm:p-6"
               >
-                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-emerald-700">
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[color:var(--success-foreground)]">
                   Approved
                 </p>
                 <h3 className="mt-2 text-xl font-semibold sm:text-2xl">{idea.title}</h3>

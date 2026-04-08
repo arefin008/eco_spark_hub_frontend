@@ -15,19 +15,34 @@ export default function TermsOfUsePage() {
         <h1 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">
           Platform participation terms
         </h1>
-        <div className="mt-6 space-y-5 text-sm leading-7 text-muted-foreground">
-          <p>
-            EcoSpark Hub is intended for responsible idea sharing, constructive discussion, and
-            lawful use of premium content and payment features.
-          </p>
-          <p>
-            Members are responsible for the originality, legality, and accuracy of their submitted
-            ideas. Admins may review, reject, or remove submissions that violate platform standards.
-          </p>
-          <p>
-            Premium implementation content may require payment before access. Unauthorized copying,
-            resale, or misuse of protected content is prohibited.
-          </p>
+        <div className="mt-10 grid gap-8 pb-4 md:grid-cols-2">
+          <section className="space-y-3">
+            <h2 className="text-lg font-medium text-foreground">Community Standards</h2>
+            <p className="text-sm leading-7 text-muted-foreground">
+              EcoSpark Hub is designed to be a constructive space for responsible idea sharing and discussion. Members are expected to participate respectfully and adhere to all applicable laws regarding intellectual property and digital conduct.
+            </p>
+          </section>
+          
+          <section className="space-y-3">
+            <h2 className="text-lg font-medium text-foreground">Content Ownership & Accuracy</h2>
+            <p className="text-sm leading-7 text-muted-foreground">
+              Members are solely responsible for the originality, legality, and factual accuracy of their submitted sustainability ideas. Our administrative team reserves the right to review, reject, or permanently remove submissions that violate platform standards.
+            </p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-medium text-foreground">Premium Implementation Data</h2>
+            <p className="text-sm leading-7 text-muted-foreground">
+              Premium implementation resources and high-tier content may require payment prior to access. The unauthorized copying, automated scraping, resale, or mass distributions of our protected premium content is strictly prohibited.
+            </p>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-lg font-medium text-foreground">Account Termination</h2>
+            <p className="text-sm leading-7 text-muted-foreground">
+              EcoSpark Hub reserves the right to suspend or terminate accounts that repeatedly violate these terms, engage in fraudulent transactions, or deliberately undermine the integrity of our community voting and moderation systems.
+            </p>
+          </section>
         </div>
       </div>
     </PageShell>

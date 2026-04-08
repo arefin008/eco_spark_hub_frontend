@@ -2,27 +2,32 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
+  ChevronDown,
   ChevronRight,
   LogOut,
   Menu,
   PanelLeftClose,
   PanelLeftOpen,
+  Settings,
+  ShieldCheck,
   UserCircle2,
   X,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { AuthGuard } from "@/components/ecospark/auth-guard";
+import { ProfileDropdown } from "@/components/ecospark/profile-dropdown";
 import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/hooks/use-current-user";
-import { authService } from "@/services/auth.service";
 import { completeClientLogout } from "@/lib/client-auth";
-import { cn } from "@/lib/utils";
 import { adminDashboardLinks, memberDashboardLinks } from "@/lib/routes";
+import { cn } from "@/lib/utils";
+import { authService } from "@/services/auth.service";
 import type { UserRole } from "@/types/domain";
+
 
 export default function DashboardLayout({
   children,
@@ -33,8 +38,7 @@ export default function DashboardLayout({
   const router = useRouter();
   const queryClient = useQueryClient();
   const { data: currentUser } = useCurrentUser();
-  const links =
-    currentUser?.role === "ADMIN" ? adminDashboardLinks : memberDashboardLinks;
+  const links = currentUser?.role === "ADMIN" ? adminDashboardLinks : memberDashboardLinks;
   const allowedRoles: UserRole[] | undefined = pathname.startsWith("/dashboard/admin")
     ? ["ADMIN"]
     : pathname.startsWith("/dashboard/member")
@@ -50,35 +54,33 @@ export default function DashboardLayout({
     },
     onError: (error) => toast.error(error.message),
   });
+
+  const activeItem = useMemo(() => {
+    const allLinks = [
+      ...adminDashboardLinks,
+      ...memberDashboardLinks,
+      { href: "/my-profile", label: "Profile", icon: UserCircle2 },
+    ];
+
+    return allLinks
+      .filter((item, index, self) => self.findIndex((entry) => entry.href === item.href) === index)
+      .sort((left, right) => right.href.length - left.href.length)
+      .find((item) => pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href)));
+  }, [pathname]);
+
+
+
   const isProfileActive = pathname === "/my-profile";
+  const workspaceLabel = currentUser?.role === "ADMIN" ? "Admin workspace" : "Member workspace";
 
   return (
     <AuthGuard allowedRoles={allowedRoles}>
       <div
         className={cn(
-          "grid min-h-screen",
+          "grid min-h-screen bg-background",
           desktopCollapsed ? "lg:grid-cols-[92px_1fr]" : "lg:grid-cols-[300px_1fr]",
         )}
       >
-        <div className="sticky top-0 z-30 flex items-center justify-between border-b border-border/70 bg-background/92 px-4 py-3 backdrop-blur lg:hidden">
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-foreground">EcoSpark Hub Dashboard</p>
-            <p className="text-xs text-muted-foreground">
-              {currentUser ? `${currentUser.role.toLowerCase()} workspace` : "Navigation"}
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            size="icon-sm"
-            className="rounded-full"
-            onClick={() => setMobileSidebarOpen((value) => !value)}
-            aria-expanded={mobileSidebarOpen}
-            aria-label={mobileSidebarOpen ? "Close dashboard sidebar" : "Open dashboard sidebar"}
-          >
-            {mobileSidebarOpen ? <X className="size-4" /> : <Menu className="size-4" />}
-          </Button>
-        </div>
-
         {mobileSidebarOpen ? (
           <button
             type="button"
@@ -90,7 +92,7 @@ export default function DashboardLayout({
 
         <aside
           className={cn(
-            "fixed inset-y-0 left-0 z-40 w-[285px] border-r border-border/70 bg-sidebar/96 px-4 py-5 backdrop-blur-xl transition-transform duration-200 sm:px-6 sm:py-8 lg:relative lg:w-auto lg:translate-x-0 lg:border-b-0",
+            "fixed inset-y-0 left-0 z-40 w-[285px] border-r border-border/70 bg-sidebar/96 px-4 py-5 backdrop-blur-xl transition-transform duration-200 sm:px-6 sm:py-8 lg:sticky lg:top-0 lg:h-screen lg:w-auto lg:translate-x-0 lg:border-b-0",
             "lg:transition-[width,padding] lg:duration-200",
             mobileSidebarOpen ? "translate-x-0" : "-translate-x-full",
             desktopCollapsed && "lg:w-[92px] lg:px-3",
@@ -120,7 +122,7 @@ export default function DashboardLayout({
             )}
           </Button>
 
-          <div className="flex h-full flex-col gap-8">
+          <div className="flex min-h-full flex-col gap-8">
             <div
               className={cn(
                 "w-full rounded-[24px] border border-border/70 bg-background/72 p-4 shadow-sm sm:rounded-[30px] sm:p-5",
@@ -136,7 +138,7 @@ export default function DashboardLayout({
                   </p>
                   <h2 className="mt-2 text-3xl font-semibold tracking-tight">Dashboard</h2>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    {currentUser ? `${currentUser.role.toLowerCase()} workspace` : "Sign in required"}
+                    {currentUser ? workspaceLabel : "Sign in required"}
                   </p>
                 </>
               )}
@@ -165,60 +167,53 @@ export default function DashboardLayout({
               })}
             </nav>
 
-            <div
-              className={cn(
-                "mt-auto rounded-[24px] border border-border/70 bg-background/90 p-3 shadow-sm sm:rounded-[28px] sm:p-4",
-                desktopCollapsed && "lg:px-2 lg:py-2.5",
-              )}
-            >
-              <Link
-                href="/my-profile"
-                className={cn(
-                  "flex items-center gap-3 rounded-2xl border border-border/60 bg-card px-3 py-3 transition hover:border-primary/20 hover:bg-secondary/45",
-                  desktopCollapsed && "lg:justify-center lg:border-transparent lg:bg-transparent lg:px-0 lg:py-2",
-                  isProfileActive && "border-primary/15 bg-secondary/60",
-                )}
-                onClick={() => setMobileSidebarOpen(false)}
-              >
-                <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,color-mix(in_oklab,var(--primary)_16%,white),color-mix(in_oklab,var(--secondary)_86%,white))] text-primary">
-                  <UserCircle2 className="size-5" />
-                </div>
-                <div className={cn("min-w-0 flex-1", desktopCollapsed && "lg:hidden")}>
-                  <p className="text-sm font-semibold text-foreground">
-                    {currentUser?.name ?? "Account"}
-                  </p>
-                  <p className="mt-1 truncate text-xs text-muted-foreground sm:text-sm">
-                    {currentUser?.email ?? "Signed in user"}
-                  </p>
-                </div>
-                <ChevronRight
-                  className={cn(
-                    "size-4 shrink-0 text-muted-foreground",
-                    desktopCollapsed && "lg:hidden",
-                  )}
-                />
-              </Link>
-
-              <div className={cn("mt-3 border-t border-border/70 pt-3", desktopCollapsed && "lg:mt-2 lg:border-t-0 lg:pt-0")}>
-                <Button
-                  variant="ghost"
-                  className={cn(
-                    "h-11 w-full justify-start rounded-2xl px-4 text-muted-foreground hover:bg-destructive/8 hover:text-destructive",
-                    desktopCollapsed && "lg:justify-center lg:px-0",
-                  )}
-                  onClick={() => logoutMutation.mutate()}
-                  disabled={logoutMutation.isPending}
-                >
-                  <LogOut className="size-4" />
-                  <span className={cn(desktopCollapsed && "lg:hidden")}>
-                    {logoutMutation.isPending ? "Logging out..." : "Logout"}
-                  </span>
-                </Button>
-              </div>
+            <div className="mt-auto px-4 lg:px-0">
+              <ProfileDropdown 
+                side="top" 
+                align="start" 
+                compact={desktopCollapsed} 
+                className={cn("w-full py-3", desktopCollapsed && "lg:bg-transparent lg:border-transparent lg:shadow-none lg:hover:bg-secondary lg:justify-center")}
+              />
             </div>
           </div>
         </aside>
-        <div className="min-w-0 bg-background">{children}</div>
+
+        <div className="min-w-0">
+          <header className="sticky top-0 z-20 border-b border-border/70 bg-background/90 backdrop-blur-xl">
+            <div className="flex min-h-18 items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+              <div className="flex min-w-0 items-center gap-3">
+                <Button
+                  variant="outline"
+                  size="icon-sm"
+                  className="rounded-full lg:hidden"
+                  onClick={() => setMobileSidebarOpen((value) => !value)}
+                  aria-expanded={mobileSidebarOpen}
+                  aria-label={mobileSidebarOpen ? "Close dashboard sidebar" : "Open dashboard sidebar"}
+                >
+                  {mobileSidebarOpen ? <X className="size-4" /> : <Menu className="size-4" />}
+                </Button>
+
+                <div className="min-w-0">
+                  <p className="truncate text-xs font-semibold uppercase tracking-[0.28em] text-primary">
+                    {workspaceLabel}
+                  </p>
+                  <div className="mt-1 flex min-w-0 items-center gap-2">
+                    <h1 className="truncate text-xl font-semibold tracking-tight sm:text-2xl">
+                      {activeItem?.label ?? "Dashboard"}
+                    </h1>
+                    {pathname !== "/dashboard" ? (
+                      <span className="hidden text-sm text-muted-foreground sm:inline">
+                        / dashboard
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <main className="min-w-0">{children}</main>
+        </div>
       </div>
     </AuthGuard>
   );

@@ -35,6 +35,16 @@ export const authHttpClient = axios.create({
 });
 
 function getApiErrorMessage(error: AxiosError<ApiErrorResponse>) {
+  const status = error.response?.status;
+
+  if (status === 429) {
+    return "The AI service has reached its free usage limit for now. Please wait a bit and try again later.";
+  }
+
+  if (status === 503) {
+    return "The service is temporarily unavailable. Please try again shortly.";
+  }
+
   return (
     error.response?.data?.message ||
     error.response?.data?.errorSources?.[0]?.message ||
@@ -42,6 +52,12 @@ function getApiErrorMessage(error: AxiosError<ApiErrorResponse>) {
     "Request failed."
   );
 }
+
+httpClient.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError<ApiErrorResponse>) =>
+    Promise.reject(new ApiRequestError(getApiErrorMessage(error), error.response?.status)),
+);
 
 authHttpClient.interceptors.response.use(
   (response) => response,

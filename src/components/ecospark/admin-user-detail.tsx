@@ -4,6 +4,7 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useEffect } from "react";
+import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 
@@ -25,6 +26,10 @@ const userSchema = z.object({
 
 export function AdminUserDetail({ userId }: { userId: string }) {
   const queryClient = useQueryClient();
+  const [errors, setErrors] = useState<
+    Partial<Record<"name" | "email" | "role" | "status", string>>
+  >({});
+  const [successMessage, setSuccessMessage] = useState("");
   const userQuery = useQuery({
     queryKey: ["admin-user", userId],
     queryFn: () => userService.byId(userId),
@@ -41,10 +46,20 @@ export function AdminUserDetail({ userId }: { userId: string }) {
       const parsed = userSchema.safeParse(value);
 
       if (!parsed.success) {
+        setSuccessMessage("");
+        setErrors(
+          Object.fromEntries(
+            Object.entries(parsed.error.flatten().fieldErrors).map(([key, messages]) => [
+              key,
+              messages?.[0],
+            ]),
+          ) as Partial<Record<"name" | "email" | "role" | "status", string>>,
+        );
         toast.error(parsed.error.issues[0]?.message || "Invalid user form.");
         return;
       }
 
+      setErrors({});
       updateMutation.mutate(parsed.data);
     },
   });
@@ -52,6 +67,7 @@ export function AdminUserDetail({ userId }: { userId: string }) {
   const updateMutation = useMutation({
     mutationFn: (payload: z.infer<typeof userSchema>) => userService.update(userId, payload),
     onSuccess: async () => {
+      setSuccessMessage("User profile updated successfully.");
       toast.success("User updated.");
       await queryClient.invalidateQueries({ queryKey: ["admin-user", userId] });
       await queryClient.invalidateQueries({ queryKey: ["admin-users"] });
@@ -136,55 +152,79 @@ export function AdminUserDetail({ userId }: { userId: string }) {
                 void form.handleSubmit();
               }}
             >
+              {successMessage ? <p className="ui-status-success">{successMessage}</p> : null}
+
               <form.Field name="name">
                 {(field) => (
-                  <Input
-                    value={field.state.value}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    placeholder="Full name"
-                  />
+                  <label className="space-y-2">
+                    <span className="text-sm font-medium">Full name</span>
+                    <Input
+                      value={field.state.value}
+                      onChange={(event) => field.handleChange(event.target.value)}
+                      placeholder="Full name"
+                      aria-invalid={Boolean(errors.name)}
+                    />
+                    {errors.name ? <p className="text-sm text-destructive">{errors.name}</p> : null}
+                  </label>
                 )}
               </form.Field>
 
               <form.Field name="email">
                 {(field) => (
-                  <Input
-                    type="email"
-                    value={field.state.value}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    placeholder="Email"
-                  />
+                  <label className="space-y-2">
+                    <span className="text-sm font-medium">Email</span>
+                    <Input
+                      type="email"
+                      value={field.state.value}
+                      onChange={(event) => field.handleChange(event.target.value)}
+                      placeholder="Email"
+                      aria-invalid={Boolean(errors.email)}
+                    />
+                    {errors.email ? <p className="text-sm text-destructive">{errors.email}</p> : null}
+                  </label>
                 )}
               </form.Field>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <form.Field name="role">
                   {(field) => (
-                    <select
-                      value={field.state.value}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value as "MEMBER" | "ADMIN")
-                      }
-                      className="h-12 rounded-2xl border border-border bg-background px-4 outline-none"
-                    >
-                      <option value="MEMBER">MEMBER</option>
-                      <option value="ADMIN">ADMIN</option>
-                    </select>
+                    <label className="space-y-2">
+                      <span className="text-sm font-medium">Role</span>
+                      <select
+                        value={field.state.value}
+                        onChange={(event) =>
+                          field.handleChange(event.target.value as "MEMBER" | "ADMIN")
+                        }
+                        className="ui-control"
+                        aria-invalid={Boolean(errors.role)}
+                      >
+                        <option value="MEMBER">MEMBER</option>
+                        <option value="ADMIN">ADMIN</option>
+                      </select>
+                      {errors.role ? <p className="text-sm text-destructive">{errors.role}</p> : null}
+                    </label>
                   )}
                 </form.Field>
 
                 <form.Field name="status">
                   {(field) => (
-                    <select
-                      value={field.state.value}
-                      onChange={(event) =>
-                        field.handleChange(event.target.value as "ACTIVE" | "DEACTIVATED")
-                      }
-                      className="h-12 rounded-2xl border border-border bg-background px-4 outline-none"
-                    >
-                      <option value="ACTIVE">ACTIVE</option>
-                      <option value="DEACTIVATED">DEACTIVATED</option>
-                    </select>
+                    <label className="space-y-2">
+                      <span className="text-sm font-medium">Status</span>
+                      <select
+                        value={field.state.value}
+                        onChange={(event) =>
+                          field.handleChange(event.target.value as "ACTIVE" | "DEACTIVATED")
+                        }
+                        className="ui-control"
+                        aria-invalid={Boolean(errors.status)}
+                      >
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="DEACTIVATED">DEACTIVATED</option>
+                      </select>
+                      {errors.status ? (
+                        <p className="text-sm text-destructive">{errors.status}</p>
+                      ) : null}
+                    </label>
                   )}
                 </form.Field>
               </div>
@@ -204,11 +244,11 @@ export function AdminUserDetail({ userId }: { userId: string }) {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="rounded-[24px] border border-border/70 bg-background/70 p-5">
+            <div className="ui-surface-subtle p-5">
               <p className="text-sm text-muted-foreground">Current role</p>
               <p className="mt-1 text-xl font-semibold">{user.role}</p>
             </div>
-            <div className="rounded-[24px] border border-border/70 bg-background/70 p-5">
+            <div className="ui-surface-subtle p-5">
               <p className="text-sm text-muted-foreground">Current status</p>
               <p className="mt-1 text-xl font-semibold">{user.status}</p>
             </div>

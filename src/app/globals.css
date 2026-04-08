@@ -82,6 +82,10 @@
   --sidebar-accent-foreground: #0f172a;
   --sidebar-border: #d9e2ec;
   --sidebar-ring: #2563eb;
+  --success: color-mix(in srgb, var(--secondary) 86%, white);
+  --success-foreground: #0f172a;
+  --warning: color-mix(in srgb, var(--accent) 88%, white);
+  --warning-foreground: #0f172a;
 }
 
 .dark {
@@ -117,6 +121,10 @@
   --sidebar-accent-foreground: #e5eef8;
   --sidebar-border: #243248;
   --sidebar-ring: #3b82f6;
+  --success: color-mix(in srgb, var(--secondary) 82%, black);
+  --success-foreground: #ecfeff;
+  --warning: color-mix(in srgb, var(--accent) 84%, black);
+  --warning-foreground: #fffbeb;
 }
 
 @layer base {
@@ -128,10 +136,67 @@
     @apply h-full scroll-smooth;
   }
 
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+
+  .lenis.lenis-smooth iframe {
+    pointer-events: none;
+  }
+
   body {
     @apply min-h-full bg-background font-sans text-foreground;
     background-image:
       radial-gradient(circle at top left, color-mix(in srgb, var(--primary) 9%, transparent), transparent 28%),
       radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--secondary) 10%, transparent), transparent 24%);
+  }
+}
+
+@layer components {
+  .ui-shell {
+    @apply mx-auto w-full max-w-7xl px-4 py-8 sm:px-5 sm:py-10 md:px-8 lg:px-10;
+  }
+
+  .ui-surface {
+    @apply rounded-[28px] border border-border/80 bg-card shadow-sm;
+  }
+
+  .ui-surface-subtle {
+    @apply rounded-2xl border border-border/70 bg-background/78;
+  }
+
+  .ui-control {
+    @apply h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .ui-control-textarea {
+    @apply min-h-28 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .ui-status-success {
+    @apply rounded-2xl border px-4 py-3 text-sm;
+    border-color: color-mix(in srgb, var(--success) 40%, var(--border));
+    background-color: color-mix(in srgb, var(--success) 16%, var(--background));
+    color: var(--success-foreground);
+  }
+
+  .ui-status-warning {
+    @apply rounded-2xl border px-4 py-3 text-sm;
+    border-color: color-mix(in srgb, var(--warning) 42%, var(--border));
+    background-color: color-mix(in srgb, var(--warning) 16%, var(--background));
+    color: var(--warning-foreground);
+  }
+
+  .ui-status-error {
+    @apply rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive;
   }
 }

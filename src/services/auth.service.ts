@@ -37,6 +37,7 @@ interface MeOptions {
 }
 
 type CurrentUser = User | null;
+type SocialProvider = "google" | "facebook";
 
 function getGoogleRedirectTarget(callbackUrl?: string) {
   const baseUrl =
@@ -56,8 +57,16 @@ function getGoogleRedirectTarget(callbackUrl?: string) {
 }
 
 function getGoogleSignInStartUrl(callbackUrl?: string) {
+  return getSocialSignInStartUrl("google", callbackUrl);
+}
+
+function getProviderAuthUrl(provider: SocialProvider) {
+  return provider === "google" ? appConfig.googleAuthUrl : appConfig.facebookAuthUrl;
+}
+
+function getSocialSignInStartUrl(provider: SocialProvider, callbackUrl?: string) {
   const redirectUrl = new URL(
-    appConfig.googleAuthUrl,
+    getProviderAuthUrl(provider),
     typeof window !== "undefined" && window.location.origin
       ? window.location.origin
       : appConfig.appUrl,
@@ -76,6 +85,15 @@ export const authService = {
 
     return {
       url: getGoogleSignInStartUrl(callbackUrl),
+    };
+  },
+  async signInWithFacebook(callbackUrl?: string) {
+    if (!appConfig.facebookAuthUrl) {
+      throw new Error("Facebook sign-in is not configured.");
+    }
+
+    return {
+      url: getSocialSignInStartUrl("facebook", callbackUrl),
     };
   },
   async register(payload: RegisterInput) {

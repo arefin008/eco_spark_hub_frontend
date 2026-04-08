@@ -23,6 +23,8 @@ const categorySchema = z.object({
 export function AdminCategoryManager() {
   const queryClient = useQueryClient();
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [errors, setErrors] = useState<Partial<Record<"name" | "description", string>>>({});
+  const [successMessage, setSuccessMessage] = useState("");
   const categoriesQuery = useQuery({
     queryKey: ["admin-categories"],
     queryFn: () => categoryService.list({ limit: 100 }),
@@ -37,10 +39,20 @@ export function AdminCategoryManager() {
       const parsed = categorySchema.safeParse(value);
 
       if (!parsed.success) {
+        setSuccessMessage("");
+        setErrors(
+          Object.fromEntries(
+            Object.entries(parsed.error.flatten().fieldErrors).map(([key, messages]) => [
+              key,
+              messages?.[0],
+            ]),
+          ) as Partial<Record<"name" | "description", string>>,
+        );
         toast.error(parsed.error.issues[0]?.message || "Invalid category form.");
         return;
       }
 
+      setErrors({});
       saveMutation.mutate(parsed.data);
     },
   });
@@ -54,6 +66,7 @@ export function AdminCategoryManager() {
       return categoryService.create(payload);
     },
     onSuccess: async () => {
+      setSuccessMessage(editingCategory ? "Category updated successfully." : "Category created successfully.");
       toast.success(editingCategory ? "Category updated." : "Category created.");
       setEditingCategory(null);
       form.reset();
@@ -74,6 +87,8 @@ export function AdminCategoryManager() {
   });
 
   function hydrateForm(category: Category) {
+    setSuccessMessage("");
+    setErrors({});
     setEditingCategory(category);
     form.setFieldValue("name", category.name);
     form.setFieldValue("description", category.description ?? "");
@@ -100,24 +115,38 @@ export function AdminCategoryManager() {
                 void form.handleSubmit();
               }}
             >
+              {successMessage ? <p className="ui-status-success">{successMessage}</p> : null}
+
               <form.Field name="name">
                 {(field) => (
-                  <Input
-                    value={field.state.value}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    placeholder="Category name"
-                  />
+                  <label className="space-y-2">
+                    <span className="text-sm font-medium">Category name</span>
+                    <Input
+                      value={field.state.value}
+                      onChange={(event) => field.handleChange(event.target.value)}
+                      placeholder="Category name"
+                      aria-invalid={Boolean(errors.name)}
+                    />
+                    {errors.name ? <p className="text-sm text-destructive">{errors.name}</p> : null}
+                  </label>
                 )}
               </form.Field>
 
               <form.Field name="description">
                 {(field) => (
-                  <Textarea
-                    value={field.state.value}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                    placeholder="Short category description"
-                    className="min-h-28"
-                  />
+                  <label className="space-y-2">
+                    <span className="text-sm font-medium">Description</span>
+                    <Textarea
+                      value={field.state.value}
+                      onChange={(event) => field.handleChange(event.target.value)}
+                      placeholder="Short category description"
+                      className="min-h-28"
+                      aria-invalid={Boolean(errors.description)}
+                    />
+                    {errors.description ? (
+                      <p className="text-sm text-destructive">{errors.description}</p>
+                    ) : null}
+                  </label>
                 )}
               </form.Field>
 
@@ -135,6 +164,8 @@ export function AdminCategoryManager() {
                     variant="outline"
                     onClick={() => {
                       setEditingCategory(null);
+                      setSuccessMessage("");
+                      setErrors({});
                       form.reset();
                     }}
                   >

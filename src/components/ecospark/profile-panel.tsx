@@ -14,7 +14,7 @@ import {
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -25,6 +25,7 @@ import { useCurrentUser } from "@/hooks/use-current-user";
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/lib/helpers";
 import { authService } from "@/services/auth.service";
+import { userService } from "@/services/user.service";
 
 const passwordSchema = z
   .object({
@@ -47,6 +48,11 @@ const resetSchema = z
     message: "Passwords do not match.",
     path: ["confirmPassword"],
   });
+
+const accountSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters."),
+  email: z.email("Enter a valid email."),
+});
 
 function OtpSlots({ slots }: { slots: Array<{ char: string | null; isActive: boolean }> }) {
   return (
@@ -128,6 +134,8 @@ const sectionTransition = {
 export function ProfilePanel() {
   const queryClient = useQueryClient();
   const { data: currentUser, isLoading } = useCurrentUser();
+  const [accountErrors, setAccountErrors] = useState<Partial<Record<"name" | "email", string>>>({});
+  const [accountSuccessMessage, setAccountSuccessMessage] = useState("");
   const [passwordErrors, setPasswordErrors] = useState<
     Partial<Record<"currentPassword" | "newPassword" | "confirmPassword", string>>
   >({});
@@ -140,6 +148,50 @@ export function ProfilePanel() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showResetNewPassword, setShowResetNewPassword] = useState(false);
   const [showResetConfirmPassword, setShowResetConfirmPassword] = useState(false);
+
+  const accountForm = useForm({
+    defaultValues: {
+      name: "",
+      email: "",
+    },
+    onSubmit: async ({ value }) => {
+      const parsed = accountSchema.safeParse(value);
+      if (!parsed.success) {
+        setAccountSuccessMessage("");
+        setAccountErrors(
+          Object.fromEntries(
+            Object.entries(parsed.error.flatten().fieldErrors).map(([key, messages]) => [
+              key,
+              messages?.[0],
+            ]),
+          ) as Partial<Record<"name" | "email", string>>,
+        );
+        toast.error(parsed.error.issues[0]?.message || "Invalid account details.");
+        return;
+      }
+
+      if (!currentUser) return;
+
+      setAccountErrors({});
+      updateAccountMutation.mutate(parsed.data);
+    },
+  });
+
+  const updateAccountMutation = useMutation({
+    mutationFn: (payload: z.infer<typeof accountSchema>) => {
+      if (!currentUser) {
+        throw new Error("No active user was found.");
+      }
+
+      return userService.update(currentUser.id, payload);
+    },
+    onSuccess: async () => {
+      setAccountSuccessMessage("Profile updated successfully.");
+      toast.success("Profile updated.");
+      await queryClient.invalidateQueries({ queryKey: ["current-user"] });
+    },
+    onError: (error) => toast.error(error.message),
+  });
 
   const changePasswordMutation = useMutation({
     mutationFn: authService.changePassword,
@@ -240,6 +292,15 @@ export function ProfilePanel() {
     },
   });
 
+  useEffect(() => {
+    if (!currentUser || updateAccountMutation.isPending) {
+      return;
+    }
+
+    accountForm.setFieldValue("name", currentUser.name);
+    accountForm.setFieldValue("email", currentUser.email);
+  }, [accountForm, currentUser, updateAccountMutation.isPending]);
+
   if (isLoading) {
     return <div className="py-10 text-muted-foreground">Loading profile...</div>;
   }
@@ -264,8 +325,7 @@ export function ProfilePanel() {
               </div>
               <h1 className="mt-5 text-4xl font-semibold tracking-tight">{currentUser.name}</h1>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-                Keep your account secure, confirm email ownership, rotate passwords, and recover
-                access through the same backend OTP flow exposed by the API.
+                Keep your personal details up to date, manage verification, and handle password recovery from one place.
               </p>
               <div className="mt-6 grid gap-3 text-sm md:grid-cols-2">
                 <div className="rounded-2xl border border-border/70 bg-background/75 p-4">
@@ -317,6 +377,96 @@ export function ProfilePanel() {
               </div>
 
             </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ ...sectionTransition, delay: 0.03 }}
+      >
+        <Card className="border-border/70">
+          <CardHeader>
+            <CardTitle>Edit profile</CardTitle>
+            <CardDescription>
+              Update the basic account information shown across your dashboard.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form
+              className="grid gap-4 md:grid-cols-2"
+              onSubmit={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                void accountForm.handleSubmit();
+              }}
+            >
+              {accountSuccessMessage ? <p className="ui-status-success md:col-span-2">{accountSuccessMessage}</p> : null}
+
+              <accountForm.Field name="name">
+                {(field) => (
+                  <label className="space-y-2">
+                    <span className="text-sm font-medium">Full name</span>
+                    <Input
+                      value={field.state.value}
+                      onChange={(event) => {
+                        setAccountSuccessMessage("");
+                        setAccountErrors((current) => ({ ...current, name: undefined }));
+                        field.handleChange(event.target.value);
+                      }}
+                      placeholder="Your full name"
+                      aria-invalid={Boolean(accountErrors.name)}
+                    />
+                    {accountErrors.name ? <p className="text-sm text-destructive">{accountErrors.name}</p> : null}
+                  </label>
+                )}
+              </accountForm.Field>
+
+              <accountForm.Field name="email">
+                {(field) => (
+                  <label className="space-y-2">
+                    <span className="text-sm font-medium">Email</span>
+                    <Input
+                      type="email"
+                      value={field.state.value}
+                      onChange={(event) => {
+                        setAccountSuccessMessage("");
+                        setAccountErrors((current) => ({ ...current, email: undefined }));
+                        field.handleChange(event.target.value);
+                      }}
+                      placeholder="you@example.com"
+                      aria-invalid={Boolean(accountErrors.email)}
+                    />
+                    {accountErrors.email ? <p className="text-sm text-destructive">{accountErrors.email}</p> : null}
+                  </label>
+                )}
+              </accountForm.Field>
+
+              <div className="rounded-[24px] border border-border/70 bg-muted/25 p-4 md:col-span-2 dark:bg-muted/45">
+                <p className="text-sm font-semibold">Current account state</p>
+                <div className="mt-3 grid gap-3 text-sm sm:grid-cols-3">
+                  <div>
+                    <p className="text-muted-foreground">Role</p>
+                    <p className="mt-1 font-medium text-foreground">{currentUser.role}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Status</p>
+                    <p className="mt-1 font-medium text-foreground">{currentUser.status}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Joined</p>
+                    <p className="mt-1 font-medium text-foreground">{formatDate(currentUser.createdAt)}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="md:col-span-2">
+                <Button type="submit" disabled={updateAccountMutation.isPending}>
+                  {updateAccountMutation.isPending ? "Saving..." : "Save profile changes"}
+                </Button>
+              </div>
+            </form>
           </CardContent>
         </Card>
       </motion.div>

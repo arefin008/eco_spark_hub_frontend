@@ -1,7 +1,49 @@
-import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
+import {
+  ArrowUpRight,
+  Mail,
+  MapPin,
+  Phone,
+} from "lucide-react";
 import Link from "next/link";
+import type { SVGProps } from "react";
 
 import { BrandMark } from "@/components/shared/brand-mark";
+
+function LinkedInIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect x="2" y="9" width="4" height="12" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  );
+}
+
+function GitHubIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
+      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.9a3.4 3.4 0 0 0-.9-2.6c3-.3 6.2-1.5 6.2-7A5.4 5.4 0 0 0 20 4.8 5 5 0 0 0 19.9 1S18.7.7 16 2.5a13.4 13.4 0 0 0-8 0C5.3.7 4.1 1 4.1 1A5 5 0 0 0 4 4.8a5.4 5.4 0 0 0-1.3 3.7c0 5.5 3.2 6.7 6.2 7A3.4 3.4 0 0 0 8 18.1V22" />
+    </svg>
+  );
+}
+
+function InstagramIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
+
+function FacebookIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
 
 const platformLinks = [
   { href: "/", label: "Home" },
@@ -13,7 +55,6 @@ const platformLinks = [
 const memberLinks = [
   { href: "/register", label: "Become a Member" },
   { href: "/login", label: "Member Login" },
-  { href: "/dashboard", label: "Dashboard" },
   { href: "/my-profile", label: "My Profile" },
 ];
 
@@ -21,7 +62,6 @@ const resourceLinks = [
   { href: "/newsletter", label: "Newsletter" },
   { href: "/privacy-policy", label: "Privacy Policy" },
   { href: "/terms-of-use", label: "Terms of Use" },
-  { href: "/change-password", label: "Account Security" },
 ];
 
 const footerLegalLinks = [
@@ -31,10 +71,26 @@ const footerLegalLinks = [
 ];
 
 const socialLinks = [
-  { href: "https://facebook.com", label: "Facebook" },
-  { href: "https://instagram.com", label: "Instagram" },
-  { href: "https://linkedin.com", label: "LinkedIn" },
-  { href: "https://github.com", label: "GitHub" },
+  {
+    href: "https://www.linkedin.com/feed/hashtag/?keywords=sustainability",
+    label: "LinkedIn",
+    icon: LinkedInIcon,
+  },
+  {
+    href: "https://github.com/topics/sustainability",
+    label: "GitHub",
+    icon: GitHubIcon,
+  },
+  {
+    href: "https://www.instagram.com/explore/tags/sustainability/",
+    label: "Instagram",
+    icon: InstagramIcon,
+  },
+  {
+    href: "https://www.facebook.com/hashtag/sustainability",
+    label: "Facebook",
+    icon: FacebookIcon,
+  },
 ];
 
 export function SiteFooter() {
@@ -84,6 +140,7 @@ export function SiteFooter() {
                     aria-label={item.label}
                     className="inline-flex items-center gap-2 rounded-2xl border border-border/70 bg-background/80 px-3 py-2 text-sm text-muted-foreground transition hover:border-primary/25 hover:bg-primary/8 hover:text-foreground"
                   >
+                    <item.icon className="size-4" />
                     <span>{item.label}</span>
                     <ArrowUpRight className="size-4" />
                   </a>

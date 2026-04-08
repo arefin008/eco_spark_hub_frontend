@@ -24,6 +24,28 @@ export function formatCurrency(value?: number | string | null, currency = "BDT")
   }).format(numericValue);
 }
 
+export function formatCurrencyParts(value?: number | string | null, currency = "BDT") {
+  const numericValue = Number(value ?? 0);
+  const parts = new Intl.NumberFormat("en-BD", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 2,
+  }).formatToParts(numericValue);
+
+  const currencyLabel =
+    parts.find((part) => part.type === "currency")?.value ?? currency;
+  const amount = parts
+    .filter((part) => part.type !== "currency")
+    .map((part) => part.value)
+    .join("")
+    .trim();
+
+  return {
+    currencyLabel,
+    amount,
+  };
+}
+
 export function toNumber(value?: number | string | null) {
   return Number(value ?? 0);
 }

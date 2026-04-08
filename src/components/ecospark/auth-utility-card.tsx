@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -46,6 +47,22 @@ function FieldError({ message }: { message?: string }) {
   if (!message) return null;
 
   return <p className="text-sm text-destructive">{message}</p>;
+}function PasswordInput(props: React.ComponentProps<typeof Input>) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <Input type={show ? "text" : "password"} {...props} className={cn("pr-10", props.className)} />
+      <button
+        type="button"
+        className="absolute right-0 top-0 flex h-full items-center justify-center px-3 py-2 text-muted-foreground transition hover:text-foreground"
+        onClick={() => setShow((v) => !v)}
+        tabIndex={-1}
+        aria-label={show ? "Hide password" : "Show password"}
+      >
+        {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+      </button>
+    </div>
+  );
 }
 
 const content: Record<
@@ -62,7 +79,7 @@ const content: Record<
   "verify-email": {
     eyebrow: "Email verification",
     title: "Confirm your email",
-    description: "Use the one-time passcode issued by the backend verification flow.",
+    description: "Enter the one-time code sent to your email to finish setting up your account.",
     footerHref: "/login",
     footerLabel: "Back to sign in",
     footerText: "Already finished verification?",
@@ -70,15 +87,15 @@ const content: Record<
   "forgot-password": {
     eyebrow: "Password recovery",
     title: "Reset your password",
-    description: "Request a reset OTP, then complete the password reset from the same screen.",
+    description: "Request a reset code, then choose a new password from the same screen.",
     footerHref: "/login",
     footerLabel: "Back to sign in",
     footerText: "Remembered your password?",
   },
   "change-password": {
-    eyebrow: "Account security",
+    eyebrow: "Change your password",
     title: "Change your password",
-    description: "This route uses the authenticated backend password-rotation endpoint.",
+    description: "Update your password here to keep your account secure.",
     footerHref: "/my-profile",
     footerLabel: "Back to profile",
     footerText: "Need the rest of your account settings?",
@@ -225,18 +242,18 @@ export function AuthUtilityCard({ mode }: { mode: UtilityMode }) {
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className="w-full max-w-2xl"
     >
-      <Card className="rounded-[34px] border-border/70 bg-card/94 shadow-[0_22px_60px_rgba(15,23,42,0.08)]">
-        <CardHeader className="p-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.32em] text-primary">
+      <Card className="overflow-hidden rounded-[30px] border-border/80 bg-card shadow-[0_22px_60px_rgba(15,23,42,0.08)] sm:rounded-[34px]">
+        <CardHeader className="border-b border-border/60 bg-[linear-gradient(135deg,rgba(19,78,74,0.08),rgba(245,158,11,0.08))] p-6 sm:p-8">
+          <p className="inline-flex w-fit rounded-full border border-primary/20 bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-foreground shadow-sm dark:bg-background/80 dark:text-foreground">
             {content[mode].eyebrow}
           </p>
-          <CardTitle className="text-4xl tracking-tight">{content[mode].title}</CardTitle>
-          <CardDescription className="max-w-xl text-sm leading-6">
+          <CardTitle className="text-3xl tracking-tight sm:text-4xl">{content[mode].title}</CardTitle>
+          <CardDescription className="max-w-xl text-sm leading-6 text-foreground/75">
             {content[mode].description}
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="space-y-5 px-8 pb-8 pt-0">
+        <CardContent className="space-y-5 px-6 pb-6 pt-6 sm:px-8 sm:pb-8">
           {mode === "verify-email" ? (
             <form
               className="space-y-4"
@@ -289,10 +306,10 @@ export function AuthUtilityCard({ mode }: { mode: UtilityMode }) {
 
           {mode === "forgot-password" ? (
             <>
-              <div className="rounded-[28px] border border-border/70 bg-muted/25 p-5">
+              <div className="rounded-[28px] border border-border/70 bg-muted/35 p-5 dark:bg-muted/55">
                 <p className="text-sm font-semibold">Step 1: request OTP</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  The backend will send a reset code to your email before you submit the new password.
+                <p className="mt-1 text-sm text-foreground/72">
+                  We will send a reset code to your email before you submit the new password.
                 </p>
                 <div className="mt-4 space-y-4">
                   <resetForm.Field name="email">
@@ -339,7 +356,7 @@ export function AuthUtilityCard({ mode }: { mode: UtilityMode }) {
                   void resetForm.handleSubmit();
                 }}
               >
-                <div className="rounded-[28px] border border-border/70 bg-background/65 p-5 text-sm text-muted-foreground">
+                <div className="rounded-[28px] border border-border/70 bg-background/80 p-5 text-sm text-foreground/72 dark:bg-background/45">
                   {sentOtp
                     ? `OTP requested for ${sentOtp}.`
                     : "Step 2: enter the OTP and choose your new password."}
@@ -416,8 +433,7 @@ export function AuthUtilityCard({ mode }: { mode: UtilityMode }) {
                 {(field) => (
                   <label className="block space-y-2">
                     <span className="text-sm font-medium">Current password</span>
-                    <Input
-                      type="password"
+                    <PasswordInput
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(event) => field.handleChange(event.target.value)}
@@ -432,8 +448,7 @@ export function AuthUtilityCard({ mode }: { mode: UtilityMode }) {
                 {(field) => (
                   <label className="block space-y-2">
                     <span className="text-sm font-medium">New password</span>
-                    <Input
-                      type="password"
+                    <PasswordInput
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(event) => field.handleChange(event.target.value)}
@@ -448,8 +463,7 @@ export function AuthUtilityCard({ mode }: { mode: UtilityMode }) {
                 {(field) => (
                   <label className="block space-y-2">
                     <span className="text-sm font-medium">Confirm new password</span>
-                    <Input
-                      type="password"
+                    <PasswordInput
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(event) => field.handleChange(event.target.value)}
@@ -473,11 +487,11 @@ export function AuthUtilityCard({ mode }: { mode: UtilityMode }) {
 
           <div
             className={cn(
-              "border-t border-border/70 pt-5 text-sm text-muted-foreground",
-              mode === "change-password" ? "flex items-center justify-between gap-4" : "",
+              "border-t border-border/70 pt-5 text-sm text-foreground/72",
+              mode === "change-password" ? "flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4" : "",
             )}
           >
-            <span>{content[mode].footerText}</span>{" "}
+            <span>{content[mode].footerText}</span>
             <Link href={content[mode].footerHref} className="font-semibold text-primary">
               {content[mode].footerLabel}
             </Link>

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function NewsletterPage() {
   return (
     <PageShell className="space-y-8 py-14 md:py-16">
-      <section className="grid gap-6 rounded-[32px] border border-border/80 bg-card p-6 shadow-sm lg:grid-cols-[1fr_0.95fr] lg:p-8">
+      <section className="ui-surface grid gap-6 p-6 lg:grid-cols-[1fr_0.95fr] lg:p-8">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.32em] text-primary">Newsletter</p>
           <h1 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">
@@ -23,7 +23,7 @@ export default function NewsletterPage() {
           </p>
         </div>
 
-        <div className="rounded-[28px] border border-border/80 bg-background p-5">
+        <div className="ui-surface-subtle p-5">
           <NewsletterForm />
         </div>
       </section>

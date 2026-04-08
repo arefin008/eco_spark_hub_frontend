@@ -3,14 +3,13 @@ import { cn } from "@/lib/utils";
 export function PageShell({
   children,
   className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+  ...props
+}: React.ComponentProps<"main">) {
   return (
     <main
+      {...props}
       className={cn(
-        "mx-auto w-full max-w-7xl px-4 py-8 sm:px-5 sm:py-10 md:px-8 lg:px-10",
+        "ui-shell",
         className,
       )}
     >

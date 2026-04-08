@@ -20,6 +20,10 @@ export const apiEndpoints = {
     submit: (id: string) => `/ideas/${id}/submit`,
     review: (id: string) => `/ideas/${id}/review`,
   },
+  ai: {
+    assistant: "/ai/assistant",
+    draft: "/ai/draft",
+  },
   categories: {
     list: "/categories",
     create: "/categories",
