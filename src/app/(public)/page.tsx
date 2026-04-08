@@ -15,7 +15,6 @@ import {
 import { HomeHero } from "@/components/ecospark/home-hero";
 import { FeaturedIdeasSection } from "@/components/ecospark/featured-ideas-section";
 import { BackToTopButton } from "@/components/ecospark/back-to-top-button";
-import { HomeLenis } from "@/components/ecospark/home-lenis";
 import { NewsletterForm } from "@/components/ecospark/newsletter-form";
 import { PageShell } from "@/components/ecospark/page-shell";
 import { Reveal } from "@/components/ecospark/reveal";
@@ -116,7 +115,6 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   return (
     <>
-      <HomeLenis />
       <HomeHero />
 
       <PageShell id="platform-overview" className="space-y-16 py-12 md:py-16">
