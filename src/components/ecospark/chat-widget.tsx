@@ -93,7 +93,11 @@ export function ChatWidget() {
   }
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-3 z-50 px-3 sm:bottom-4 sm:inset-x-auto sm:right-5 sm:px-0">
+    <div
+      data-lenis-prevent
+      data-scroll-lock
+      className="pointer-events-none fixed inset-x-0 bottom-3 z-50 px-3 sm:bottom-4 sm:inset-x-auto sm:right-5 sm:px-0"
+    >
       <div className="flex flex-col items-end gap-3">
         <div
           className={cn(

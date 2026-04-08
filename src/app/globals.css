@@ -134,11 +134,24 @@
 
   html {
     @apply h-full scroll-smooth;
+    overflow-x: clip;
   }
 
   html.lenis,
   html.lenis body {
     height: auto;
+  }
+
+  .lenis:not(.lenis-autoToggle).lenis-stopped {
+    overflow: clip;
+  }
+
+  .lenis [data-lenis-prevent],
+  .lenis [data-lenis-prevent-wheel],
+  .lenis [data-lenis-prevent-touch],
+  .lenis [data-lenis-prevent-vertical],
+  .lenis [data-lenis-prevent-horizontal] {
+    overscroll-behavior: contain;
   }
 
   .lenis.lenis-smooth {
@@ -155,6 +168,7 @@
 
   body {
     @apply min-h-full bg-background font-sans text-foreground;
+    overflow-x: clip;
     background-image:
       radial-gradient(circle at top left, color-mix(in srgb, var(--primary) 9%, transparent), transparent 28%),
       radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--secondary) 10%, transparent), transparent 24%);

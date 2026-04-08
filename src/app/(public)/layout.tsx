@@ -8,9 +8,9 @@ export default function PublicLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
-      {children}
+      <div className="flex-1">{children}</div>
       <ChatWidget />
       <SiteFooter />
     </div>

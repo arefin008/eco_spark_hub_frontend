@@ -21,6 +21,35 @@ export function HomeLenis() {
       syncTouch: false,
       wheelMultiplier: 0.95,
       touchMultiplier: 1,
+      anchors: true,
+      stopInertiaOnNavigate: true,
+      prevent: (node) => {
+        for (let element: HTMLElement | null = node; element; element = element.parentElement) {
+          if (
+            element.matches(
+              "input, textarea, select, option, iframe, dialog, [contenteditable='true']",
+            ) ||
+            element.hasAttribute("data-lenis-prevent") ||
+            element.hasAttribute("data-scroll-lock")
+          ) {
+            return true;
+          }
+
+          const style = window.getComputedStyle(element);
+          const isScrollableY =
+            /(auto|scroll|overlay)/.test(style.overflowY) &&
+            element.scrollHeight > element.clientHeight;
+          const isScrollableX =
+            /(auto|scroll|overlay)/.test(style.overflowX) &&
+            element.scrollWidth > element.clientWidth;
+
+          if (isScrollableY || isScrollableX) {
+            return true;
+          }
+        }
+
+        return false;
+      },
     });
 
     (window as WindowWithLenis).__ecosparkLenis = lenis;
