@@ -15,9 +15,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EcoSpark Hub",
+  title: "Eco Spark Hub | Sustainable Innovation, Green Tech & Eco Ideas",
   description:
-    "A sustainable ideas portal scaffolded for members and admins with public, auth, and dashboard flows.",
+    "Eco Spark Hub is a platform for sustainable innovation, eco-friendly ideas, and green technology solutions. Explore projects, insights, and environmental impact tools.",
+  keywords: [
+    "eco spark hub",
+    "sustainable innovation",
+    "green technology",
+    "eco friendly ideas",
+    "environment platform"
+  ],
 };
 
 export default function RootLayout({

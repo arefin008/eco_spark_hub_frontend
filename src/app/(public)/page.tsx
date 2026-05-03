@@ -107,16 +107,22 @@ const faqItems = [
 ];
 
 export const metadata: Metadata = {
-  title: "EcoSpark Hub",
+  title: "Eco Spark Hub | Sustainable Innovation Platform",
   description:
-    "Discover, validate, and publish sustainability ideas through a clear public platform built for members and admins.",
+    "Eco Spark Hub is a platform for sustainable innovation, eco-friendly ideas, and green technology solutions.",
+  keywords: [
+    "eco spark hub",
+    "eco spark hub platform",
+    "sustainable innovation",
+    "green technology",
+    "eco friendly ideas"
+  ],
 };
 
 export default async function HomePage() {
   return (
     <>
       <HomeHero />
-
       <PageShell id="platform-overview" className="space-y-16 py-12 md:py-16">
         <Reveal>
         <section className="space-y-8">
